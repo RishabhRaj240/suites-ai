@@ -79,20 +79,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Suites AI — Your AI legal team, always on." },
+      { title: "Suites AI — AI Legal Assistant for Lawyers" },
       {
         name: "description",
         content:
           "Suites AI is the AI-powered legal assistant platform for lawyers and legal teams.",
       },
       { name: "theme-color", content: "#0A0A0F" },
-      { property: "og:title", content: "Suites AI" },
+      { property: "og:title", content: "Suites AI — AI Legal Assistant for Lawyers" },
       {
         property: "og:description",
         content: "Your AI legal team, always on.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Suites AI — AI Legal Assistant for Lawyers" },
+      { name: "description", content: "Automate contract review, legal drafting, and client intake with AI agents built for law firms." },
+      { property: "og:description", content: "Automate contract review, legal drafting, and client intake with AI agents built for law firms." },
+      { name: "twitter:description", content: "Automate contract review, legal drafting, and client intake with AI agents built for law firms." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/397da43c-d70d-44c7-82b8-802d31524331/id-preview-c20541e3--5709e0c9-5d3f-46b2-afc3-8f8c21b3f7af.lovable.app-1782110426752.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/397da43c-d70d-44c7-82b8-802d31524331/id-preview-c20541e3--5709e0c9-5d3f-46b2-afc3-8f8c21b3f7af.lovable.app-1782110426752.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
