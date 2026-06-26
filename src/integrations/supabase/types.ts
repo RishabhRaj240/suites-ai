@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      cases: {
+        Row: {
+          id: string
+          user_id: string
+          client_name: string
+          case_type: string
+          description: string
+          contact_info: string
+          intake_date: string
+          ai_summary: string | null
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          client_name: string
+          case_type: string
+          description: string
+          contact_info: string
+          intake_date: string
+          ai_summary?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          client_name?: string
+          case_type?: string
+          description?: string
+          contact_info?: string
+          intake_date?: string
+          ai_summary?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -1,4 +1,3 @@
-
 CREATE TABLE public.profiles (
   id UUID NOT NULL PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,

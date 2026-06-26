@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
+
+@source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,6 +118,41 @@
   }
 }
 
+/* ─── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes legal-pulse {
+  0%   { transform: translateY(0);    opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ripple-expand {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+@keyframes nav-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ─── @utility classes (Tailwind v4) ─────────────────────────────────────── */
+
 /* Ambient radial glow used on auth and dashboard backdrops */
 @utility bg-aurora {
   background-image:
@@ -143,72 +179,190 @@
 
 /* Hover glow used on primary CTAs */
 @utility shadow-violet-glow {
-  box-shadow: 0 0 0 1px oklch(0.64 0.205 285 / 0.3),
+  box-shadow:
+    0 0 0 1px oklch(0.64 0.205 285 / 0.3),
     0 10px 30px -10px oklch(0.64 0.205 285 / 0.45);
 }
 
 /* Subtle hairline grid for premium feel */
 @utility bg-grid {
-  background-image: linear-gradient(
-      to right,
-      oklch(0.24 0.025 280 / 0.4) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      oklch(0.24 0.025 280 / 0.4) 1px,
-      transparent 1px
-    );
+  background-image:
+    linear-gradient(to right,  oklch(0.24 0.025 280 / 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.24 0.025 280 / 0.4) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
-/* Signature "legal pulse" scan line for active agent states */
-@keyframes legal-pulse {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-}
-
-@utility legal-pulse {
-  position: relative;
-  overflow: hidden;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      oklch(0.64 0.205 285 / 0.9),
-      transparent
-    );
-    animation: legal-pulse 3.2s ease-in-out infinite;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Fade-in entry animation */
 @utility animate-fade-in {
   animation: fade-in 0.5s ease-out both;
+}
+
+/* ─── Plain CSS classes (no Tailwind processing needed) ──────────────────── */
+
+/*
+ * Legal pulse scan line — applied as a wrapper class.
+ * The ::after pseudo-element is defined as a plain CSS rule
+ * (not inside @utility) so nesting works correctly.
+ */
+.legal-pulse {
+  position: relative;
+  overflow: hidden;
+}
+
+.legal-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.64 0.205 285 / 0.9),
+    transparent
+  );
+  animation: legal-pulse 3.2s ease-in-out infinite;
+}
+
+/* ─── Page Transition ─────────────────────────────────────────────────────── */
+
+.page-transition {
+  animation: page-enter 0.2s ease-out both;
+}
+
+/* ─── Card Hover Lift ─────────────────────────────────────────────────────── */
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px -8px rgba(124, 111, 255, 0.25),
+    0 2px 8px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Ripple Effect ───────────────────────────────────────────────────────── */
+
+.ripple-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-expand 0.5s linear;
+  background: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+/* ─── Skeleton Loader ─────────────────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #12121a 25%,
+    #1a1a28 50%,
+    #12121a 75%
+  );
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* ─── Toast Overrides (success = teal, error = crimson) ──────────────────── */
+
+[data-sonner-toast][data-type="success"] {
+  background: rgba(13, 13, 22, 0.97) !important;
+  border: 1px solid rgba(45, 212, 191, 0.3) !important;
+  color: #e4e1e9 !important;
+}
+
+[data-sonner-toast][data-type="success"] [data-icon] svg {
+  color: #2dd4bf !important;
+}
+
+[data-sonner-toast][data-type="error"] {
+  background: rgba(13, 13, 22, 0.97) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #e4e1e9 !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-icon] svg {
+  color: #ef4444 !important;
+}
+
+[data-sonner-toast] [data-description] {
+  color: #7a7a8c !important;
+}
+
+/* ─── Empty State ─────────────────────────────────────────────────────────── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: rgba(124, 111, 255, 0.06);
+  border: 1px solid rgba(124, 111, 255, 0.15);
+  color: #7c6fff;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 111, 255, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 111, 255, 0.4);
+}
+
+/* ─── Focus Ring ──────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid rgba(124, 111, 255, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Nav Active Pulse Dot ────────────────────────────────────────────────── */
+
+.nav-active-dot {
+  animation: nav-pulse 2.4s ease-in-out infinite;
+}
+
+/* ─── Sidebar Mobile Overlay ──────────────────────────────────────────────── */
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 30;
+  animation: page-enter 0.15s ease-out both;
 }
