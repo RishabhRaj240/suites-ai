@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -71,17 +70,17 @@ export function AuthPage() {
   async function handleGoogle() {
     setOauthLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
       });
-      if (result.error) {
-        toast.error(result.error.message ?? "Google sign-in failed");
+      if (error) {
+        toast.error(error.message ?? "Google sign-in failed");
         setOauthLoading(false);
-        return;
       }
-      if (result.redirected) return; // browser will redirect
-      router.invalidate();
-      navigate({ to: "/", replace: true });
+      // On success the browser redirects — no further action needed here.
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
       setOauthLoading(false);
