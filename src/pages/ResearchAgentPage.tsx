@@ -190,7 +190,7 @@ function ResultCard({
       onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.borderColor = "#1E1E2E"}
     >
       {/* Row 1: Meta */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <span
           className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
           style={{ background: cat.bg, color: cat.text, border: `1px solid ${cat.border}` }}
@@ -460,7 +460,7 @@ export function ResearchAgentPage() {
 
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
@@ -513,8 +513,8 @@ export function ResearchAgentPage() {
         </header>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-10">
-          <div className="max-w-4xl mx-auto flex flex-col gap-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+          <div className="max-w-4xl mx-auto flex flex-col gap-6 lg:gap-8">
 
             {/* Page hero */}
             <section className="flex flex-col items-center text-center gap-4">
@@ -525,40 +525,40 @@ export function ResearchAgentPage() {
                 <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
                 Research Agent Active
               </span>
-              <h1 className="text-4xl font-bold text-white">Legal Research</h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white">Legal Research</h1>
               <p className="text-base" style={{ color: "#7A7A8C" }}>
                 Ask anything — statutes, precedents, case law, regulations
               </p>
 
               {/* Search bar */}
               <div className="w-full max-w-3xl mt-2">
+                {/* Input row */}
                 <div
                   className="flex items-center rounded-xl overflow-hidden transition-all duration-200"
                   style={{
                     background: "#0D0D16",
                     border: `2px solid ${searchFocused ? "#7C6FFF" : "#1E1E2E"}`,
                     boxShadow: searchFocused ? "0 0 0 4px rgba(124,111,255,0.12)" : "none",
-                    height: 64,
                   }}
                 >
-                  <div className="pl-5 pr-3 flex items-center shrink-0">
-                    <Search className="h-5 w-5" style={{ color: searchFocused ? "#A78BFF" : "#7A7A8C" }} />
+                  <div className="pl-4 pr-2 flex items-center shrink-0">
+                    <Search className="h-4 w-4" style={{ color: searchFocused ? "#A78BFF" : "#7A7A8C" }} />
                   </div>
                   <input
                     ref={inputRef}
                     type="text"
-                    placeholder="Search legal information, precedents, statutes..."
+                    placeholder="Search statutes, precedents..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className="flex-1 bg-transparent text-sm text-white placeholder:text-[#7A7A8C] outline-none min-w-0 pr-3"
+                    className="flex-1 bg-transparent text-sm text-white placeholder:text-[#7A7A8C] outline-none min-w-0 py-4"
                   />
                   {query && (
                     <button
                       onClick={() => setQuery("")}
-                      className="p-2 mr-1 rounded-lg shrink-0 transition-colors"
+                      className="p-2 rounded-lg shrink-0 transition-colors"
                       style={{ color: "#7A7A8C" }}
                       onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "white"}
                       onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"}
@@ -566,10 +566,11 @@ export function ResearchAgentPage() {
                       <X className="h-4 w-4" />
                     </button>
                   )}
+                  {/* Search button — hidden on mobile (shown below) */}
                   <button
                     onClick={() => handleSearch()}
                     disabled={searching}
-                    className="h-full px-6 text-sm font-semibold text-white flex items-center gap-2 shrink-0 transition-all duration-200"
+                    className="hidden sm:flex h-full px-5 text-sm font-semibold text-white items-center gap-2 shrink-0 transition-all duration-200"
                     style={{
                       background: searching ? "rgba(124,111,255,0.5)" : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
                       borderLeft: "1px solid rgba(124,111,255,0.3)",
@@ -588,6 +589,26 @@ export function ResearchAgentPage() {
                     )}
                   </button>
                 </div>
+
+                {/* Mobile-only full-width search button */}
+                <button
+                  onClick={() => handleSearch()}
+                  disabled={searching}
+                  className="sm:hidden mt-2 w-full py-3 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200"
+                  style={{
+                    background: searching ? "rgba(124,111,255,0.5)" : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
+                    cursor: searching ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {searching ? (
+                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Search
+                    </>
+                  )}
+                </button>
 
                 {/* Quick tags */}
                 <div className="flex items-center gap-2 mt-3 flex-wrap justify-center">
@@ -711,7 +732,7 @@ export function ResearchAgentPage() {
             {/* Empty / landing state */}
             {!results && !searching && recentSearches.length === 0 && (
               <section className="flex flex-col items-center gap-6 py-8">
-                <div className="grid grid-cols-3 gap-4 w-full max-w-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
                   {[
                     { label: "Case Law", desc: "Search Supreme Court and circuit court decisions", icon: "⚖️" },
                     { label: "Statutes", desc: "Federal and state legislative authority", icon: "📜" },

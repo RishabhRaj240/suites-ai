@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   ChevronRight,
   AlertCircle,
+  Menu,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { generateCaseSummary } from "@/lib/generateCaseSummary";
 import { callIntake, isFastApiConfigured } from "@/lib/apiClient";
 import type { Profile } from "./DashboardPage";
+import { useSidebar } from "@/hooks/useSidebar";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -103,80 +106,93 @@ function SidebarShell({
   initials,
   profile,
   onSignOut,
+  onOpenSidebar,
+  sidebarOpen,
+  onCloseSidebar,
 }: {
   displayName: string;
   initials: string;
   profile: Profile | null;
   onSignOut: () => void;
+  onOpenSidebar: () => void;
+  sidebarOpen: boolean;
+  onCloseSidebar: () => void;
 }) {
   const navigate = useNavigate();
 
   return (
-    <nav
-      className="hidden md:flex flex-col h-full shrink-0"
-      style={{ width: 240, background: "#0D0D16", borderRight: "1px solid #1E1E2E" }}
-    >
-      {/* Logo */}
-      <div className="p-6 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-            style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
-          >
-            <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
-          </div>
-          <div>
-            <span className="text-sm font-bold tracking-tight text-white block leading-tight">
-              Suites AI
-            </span>
-            <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
-              Legal Intelligence
-            </span>
+    <>
+      {sidebarOpen && (
+        <div className="sidebar-overlay md:hidden" onClick={onCloseSidebar} />
+      )}
+      <nav
+        className={`flex flex-col h-full shrink-0 fixed md:static z-40 transition-transform duration-200 ease-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+        style={{ width: 240, background: "#0D0D16", borderRight: "1px solid #1E1E2E" }}
+      >
+        {/* Logo */}
+        <div className="p-6 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+              style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+            >
+              <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
+            </div>
+            <div>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Nav */}
-      <div className="flex flex-col gap-0.5 px-3 flex-1 overflow-y-auto mt-2">
-        {NAV_ITEMS.map(({ id, label, icon: Icon, path }) => {
-          const isActive = id === "intake";
-          return (
-            <button
-              key={id}
-              onClick={() => navigate({ to: path })}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left"
-              style={{
-                color: isActive ? "#A78BFF" : "#7A7A8C",
-                background: isActive ? "rgba(124, 111, 255, 0.08)" : "transparent",
-                borderLeft: isActive ? "3px solid #A78BFF" : "3px solid transparent",
-              }}
-            >
-              <Icon className="h-4 w-4 shrink-0" strokeWidth={isActive ? 2.2 : 1.8} />
-              {label}
-            </button>
-          );
-        })}
-      </div>
+        {/* Nav */}
+        <div className="flex flex-col gap-0.5 px-3 flex-1 overflow-y-auto mt-2">
+          {NAV_ITEMS.map(({ id, label, icon: Icon, path }) => {
+            const isActive = id === "intake";
+            return (
+              <button
+                key={id}
+                onClick={() => { navigate({ to: path }); onCloseSidebar(); }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left"
+                style={{
+                  color: isActive ? "#A78BFF" : "#7A7A8C",
+                  background: isActive ? "rgba(124, 111, 255, 0.08)" : "transparent",
+                  borderLeft: isActive ? "3px solid #A78BFF" : "3px solid transparent",
+                }}
+              >
+                <Icon className="h-4 w-4 shrink-0" strokeWidth={isActive ? 2.2 : 1.8} />
+                {label}
+              </button>
+            );
+          })}
+        </div>
 
-      {/* Bottom */}
-      <div className="px-3 pb-3" style={{ borderTop: "1px solid #1E1E2E" }}>
-        <button
-          onClick={() => navigate({ to: "/settings" })}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left mt-3"
-          style={{ color: "#7A7A8C", borderLeft: "3px solid transparent" }}
-        >
-          <Settings className="h-4 w-4 shrink-0" strokeWidth={1.8} />
-          Settings
-        </button>
-        <button
-          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
-        >
-          <Plus className="h-4 w-4" />
-          New Case
-        </button>
-      </div>
-    </nav>
+        {/* Bottom */}
+        <div className="px-3 pb-3" style={{ borderTop: "1px solid #1E1E2E" }}>
+          <button
+            onClick={() => navigate({ to: "/settings" })}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left mt-3"
+            style={{ color: "#7A7A8C", borderLeft: "3px solid transparent" }}
+          >
+            <Settings className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+            Settings
+          </button>
+          <button
+            className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+          >
+            <Plus className="h-4 w-4" />
+            New Case
+          </button>
+        </div>
+      </nav>
+    </>
   );
 }
 
@@ -207,6 +223,7 @@ export function IntakeAgentPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const { sidebarOpen, openSidebar, closeSidebar } = useSidebar();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load profile
@@ -390,13 +407,16 @@ export function IntakeAgentPage() {
         initials={initials}
         profile={profile}
         onSignOut={signOut}
+        sidebarOpen={sidebarOpen}
+        onOpenSidebar={openSidebar}
+        onCloseSidebar={closeSidebar}
       />
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{
             background: "rgba(13, 13, 22, 0.85)",
             backdropFilter: "blur(20px)",
@@ -404,6 +424,13 @@ export function IntakeAgentPage() {
           }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
+            <button
+              onClick={openSidebar}
+              className="md:hidden p-1.5 rounded-lg mr-1 hover:text-white transition-colors"
+              aria-label="Open sidebar"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
             <button
               onClick={() => navigate({ to: "/" })}
               className="hover:text-white transition-colors"
@@ -470,8 +497,8 @@ export function IntakeAgentPage() {
         </header>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-10">
-          <div className="max-w-6xl mx-auto flex flex-col gap-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+          <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
 
             {/* Page title */}
             <section>
@@ -489,14 +516,14 @@ export function IntakeAgentPage() {
                 />
                 Intake Agent Active
               </span>
-              <h1 className="text-4xl font-bold text-white mt-3">New Client Intake</h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">New Client Intake</h1>
               <p className="mt-2 text-base" style={{ color: "#7A7A8C" }}>
                 Fill in case details — AI generates a live summary on the right
               </p>
             </section>
 
             {/* Two-column layout */}
-            <div className="grid gap-8" style={{ gridTemplateColumns: "55fr 45fr" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-6 lg:gap-8">
 
               {/* ── LEFT: Form ── */}
               <div

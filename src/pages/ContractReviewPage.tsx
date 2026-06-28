@@ -433,7 +433,7 @@ export function ContractReviewPage() {
 
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{
             background: "rgba(13,13,22,0.85)",
             backdropFilter: "blur(20px)",
@@ -492,8 +492,8 @@ export function ContractReviewPage() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-10">
-          <div className="max-w-6xl mx-auto flex flex-col gap-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+          <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
 
             {/* Page title */}
             <section>
@@ -508,14 +508,14 @@ export function ContractReviewPage() {
                 <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
                 Contract Review Active
               </span>
-              <h1 className="text-4xl font-bold text-white mt-3">Contract Review</h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">Contract Review</h1>
               <p className="mt-2 text-base" style={{ color: "#7A7A8C" }}>
                 Upload a contract — AI analyzes risk, clauses, and red flags instantly
               </p>
             </section>
 
             {/* Two-column */}
-            <div className="grid gap-8" style={{ gridTemplateColumns: "40fr 60fr" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[40fr_60fr] gap-6 lg:gap-8">
 
               {/* ── LEFT: Upload + Scan ── */}
               <div className="flex flex-col gap-6">

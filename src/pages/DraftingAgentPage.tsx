@@ -319,7 +319,7 @@ export function DraftingAgentPage() {
 
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{
             background: "rgba(13,13,22,0.85)",
             backdropFilter: "blur(20px)",
@@ -376,8 +376,8 @@ export function DraftingAgentPage() {
         </header>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-10">
-          <div className="max-w-6xl mx-auto flex flex-col gap-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+          <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
 
             {/* Page title */}
             <section>
@@ -388,18 +388,18 @@ export function DraftingAgentPage() {
                 <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
                 Drafting Agent Active
               </span>
-              <h1 className="text-4xl font-bold text-white mt-3">Legal Document Drafting</h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">Legal Document Drafting</h1>
               <p className="mt-2 text-base" style={{ color: "#7A7A8C" }}>
                 Configure your document — AI drafts it instantly in legal-grade language
               </p>
             </section>
 
             {/* Two-panel layout */}
-            <div className="grid gap-8" style={{ gridTemplateColumns: "42fr 58fr" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[42fr_58fr] gap-6 lg:gap-8">
 
               {/* ── LEFT: Form ── */}
               <div
-                className="rounded-xl p-7 flex flex-col gap-6 self-start sticky top-0"
+                className="rounded-xl p-5 sm:p-7 flex flex-col gap-6 lg:self-start lg:sticky lg:top-0"
                 style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
               >
                 {/* Card header */}
@@ -531,10 +531,10 @@ export function DraftingAgentPage() {
                   <div
                     className="rounded-xl flex flex-col items-center justify-center gap-4 text-center"
                     style={{
-                      background: "#0D0D16",
-                      border: "1px dashed #1E1E2E",
-                      minHeight: 480,
-                    }}
+                        background: "#0D0D16",
+                        border: "1px dashed #1E1E2E",
+                        minHeight: 320,
+                      }}
                   >
                     <div
                       className="flex h-16 w-16 items-center justify-center rounded-2xl"
@@ -629,7 +629,7 @@ export function DraftingAgentPage() {
                           {form.documentType} — {form.partyA || "Party A"} vs. {form.partyB || "Party B"}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {/* New Draft */}
                         <button
                           onClick={handleNewDraft}

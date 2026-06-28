@@ -317,7 +317,7 @@ export function SettingsPage() {
 
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
@@ -360,12 +360,12 @@ export function SettingsPage() {
         </header>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-10">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-2xl mx-auto flex flex-col gap-5">
 
             {/* Page title */}
             <div className="mb-2">
-              <h1 className="text-3xl font-bold text-white">Settings</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">Settings</h1>
               <p className="text-sm mt-1.5" style={{ color: "#7A7A8C" }}>
                 Manage your profile, API connections, and account preferences
               </p>
@@ -390,7 +390,7 @@ export function SettingsPage() {
               </div>
 
               {/* Fields */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
                   <FieldLabel>Full Name</FieldLabel>
                   <input
@@ -475,7 +475,7 @@ export function SettingsPage() {
                 {/* Backend URL */}
                 <div className="flex flex-col gap-2">
                   <FieldLabel>FastAPI Backend URL</FieldLabel>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
                       value={backendUrl}
@@ -488,7 +488,7 @@ export function SettingsPage() {
                     <button
                       onClick={testConnection}
                       disabled={testing}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium shrink-0 transition-all duration-200"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium sm:shrink-0 transition-all duration-200 w-full sm:w-auto"
                       style={{
                         background: connected ? "rgba(45,212,191,0.1)" : "transparent",
                         border: `1px solid ${connected ? "rgba(45,212,191,0.4)" : "#1E1E2E"}`,
@@ -542,7 +542,7 @@ export function SettingsPage() {
               </div>
 
               {/* Theme preview cards */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 overflow-x-auto pb-1">
                 {[
                   { label: "Dark", selected: true, bg: "#0A0A0F", border: "#1E1E2E" },
                   { label: "Midnight", selected: false, bg: "#06060F", border: "#12122A" },
@@ -594,7 +594,7 @@ export function SettingsPage() {
               <CardHeader title="Danger Zone" subtitle="Irreversible actions — proceed with caution" danger />
 
               <div
-                className="flex items-center justify-between gap-4 p-4 rounded-lg"
+                className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg p-4"
                 style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)" }}
               >
                 <div className="flex items-start gap-3">
@@ -610,7 +610,7 @@ export function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 sm:shrink-0">
                   {deleteConfirm && (
                     <button
                       onClick={() => setDeleteConfirm(false)}

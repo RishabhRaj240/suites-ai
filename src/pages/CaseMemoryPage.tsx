@@ -180,8 +180,7 @@ function CaseDrawer({
       {/* Drawer */}
       <div
         className="fixed right-0 top-0 h-full z-50 flex flex-col overflow-hidden"
-        style={{
-          width: 480,
+        style={{ width: "min(480px, 100vw)",
           background: "#0D0D16",
           borderLeft: "1px solid #1E1E2E",
           boxShadow: "-24px 0 60px rgba(0,0,0,0.6)",
@@ -526,7 +525,7 @@ export function CaseMemoryPage() {
 
         {/* Header */}
         <header
-          className="h-16 flex items-center justify-between px-8 shrink-0"
+          className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
           style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
@@ -569,17 +568,17 @@ export function CaseMemoryPage() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-7xl mx-auto flex flex-col gap-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto flex flex-col gap-5">
 
             {/* Page header */}
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium mb-4" style={{ background: "rgba(167,139,255,0.1)", color: "#A78BFF", border: "1px solid rgba(167,139,255,0.2)" }}>
                   <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
                   Case Memory Active
                 </span>
-                <h1 className="text-3xl font-bold text-white">Case Memory</h1>
+                <h1 className="text-xl md:text-3xl font-bold text-white">Case Memory</h1>
                 <p className="text-sm mt-1" style={{ color: "#7A7A8C" }}>
                   All your cases, linked documents, and research in one view · {cases.length} total
                 </p>
@@ -596,7 +595,7 @@ export function CaseMemoryPage() {
 
             {/* Search + Filter bar */}
             <div
-              className="flex items-center gap-3 rounded-xl"
+              className="flex flex-wrap items-center gap-3 rounded-xl"
               style={{ background: "#0D0D16", border: "1px solid #1E1E2E", padding: "12px 16px" }}
             >
               <Search className="h-4 w-4 shrink-0" style={{ color: "#7A7A8C" }} />
@@ -651,7 +650,8 @@ export function CaseMemoryPage() {
             </div>
 
             {/* Table */}
-            <div className="rounded-xl overflow-hidden" style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}>
+            <div className="rounded-xl overflow-x-auto" style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}>
+              <div style={{ minWidth: 720 }}>
 
               {/* Table header */}
               <div
@@ -784,6 +784,7 @@ export function CaseMemoryPage() {
                   </div>
                 );
               })}
+              </div>{/* end minWidth */}
             </div>
 
             {/* Footer count */}
