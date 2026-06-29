@@ -220,8 +220,8 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## 👨‍💻 Built By
 
-**Rishabh**  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
+**Rishab**  
+[LinkedIn](linkedin.com/in/rishab-raj-0028622b4) · [GitHub](https://github.com/RishabhRaj240)
 
 ---
 
