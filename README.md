@@ -8,8 +8,15 @@ Suites AI is an AI-powered legal workspace built for lawyers and legal professio
 
 ## 🖼️ Screenshots
 
-> _Sign-in page and dashboard built on Lovable. All agent modules built on Antigravity._
-
+<img width="1917" height="848" alt="Screenshot 2026-06-28 104024" src="https://github.com/user-attachments/assets/54d6fc7f-f612-4f80-9077-2238d17e8eef" />
+<img width="1917" height="858" alt="Screenshot 2026-06-28 104048" src="https://github.com/user-attachments/assets/362fa638-6710-49a4-b433-9a85bd9267c5" />
+<img width="1917" height="862" alt="Screenshot 2026-06-28 140736" src="https://github.com/user-attachments/assets/85749129-6a43-469f-a368-eae06942114c" />
+<img width="1917" height="847" alt="Screenshot 2026-06-28 140757" src="https://github.com/user-attachments/assets/260a162a-6d71-4c5e-9735-9819ad71abb9" />
+<img width="1917" height="857" alt="Screenshot 2026-06-28 140855" src="https://github.com/user-attachments/assets/a1ddd66f-19c2-47be-be29-4b9980dacd06" />
+<img width="1917" height="855" alt="Screenshot 2026-06-28 140922" src="https://github.com/user-attachments/assets/b86e390f-8b53-4cbd-8730-ace73b7eb84e" />
+<img width="1917" height="852" alt="Screenshot 2026-06-28 140959" src="https://github.com/user-attachments/assets/de55ed38-a3cc-4132-a361-ccc69fbd57c2" />
+<img width="1917" height="856" alt="Screenshot 2026-06-28 141016" src="https://github.com/user-attachments/assets/cc86427d-df00-48a1-bd24-c8a015a04285" />
+<img width="1917" height="853" alt="Screenshot 2026-06-28 141034" src="https://github.com/user-attachments/assets/82f1ed7e-4560-4592-90cd-692cd827997e" />
 ---
 
 ## ✨ Features
@@ -213,7 +220,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## 👨‍💻 Built By
 
-**Rishabh** — B.Tech CSE, Kalinga University  
+**Rishabh**  
 [LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
 
 ---
