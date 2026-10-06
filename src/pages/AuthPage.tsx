@@ -49,7 +49,7 @@ export function AuthPage() {
           // or contact support, since the account email is unverified.
           if (error.message === "Email not confirmed") {
             toast.error(
-              "Your email address isn't verified yet. Please sign up again or contact support."
+              "Your email address isn't verified yet. Please sign up again or contact support.",
             );
             return;
           }
@@ -95,15 +95,9 @@ export function AuthPage() {
       <div className="animate-fade-in relative w-full max-w-md">
         {/* Logo lockup */}
         <div className="mb-8 flex flex-col items-center text-center">
-          <img
-            src="/logo.png"
-            alt="Suites AI Logo"
-            className="mb-4 h-20 w-auto object-contain"
-          />
+          <img src="/logo.png" alt="Suites AI Logo" className="mb-4 h-20 w-auto object-contain" />
           <h1 className="text-3xl text-foreground">Suites AI</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Your AI legal team, always on.
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Your AI legal team, always on.</p>
         </div>
 
         {/* Card */}
@@ -124,11 +118,7 @@ export function AuthPage() {
             disabled={oauthLoading || loading}
             className="mb-5 flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-border bg-background/60 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
           >
-            {oauthLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <GoogleMark />
-            )}
+            {oauthLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleMark />}
             Continue with Google
           </button>
 

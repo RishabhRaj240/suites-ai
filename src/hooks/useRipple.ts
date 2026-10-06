@@ -36,7 +36,7 @@ export function useRipple() {
 
         handler?.(e);
       },
-    []
+    [],
   );
 
   return createRipple;

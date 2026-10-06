@@ -40,15 +40,18 @@ const FALLBACK: ContractAnalysis = {
   redFlags: [
     {
       title: "Unlimited liability clause detected",
-      detail: "Section 8.2 exposes the client to unlimited financial risk with no cap tied to contract value.",
+      detail:
+        "Section 8.2 exposes the client to unlimited financial risk with no cap tied to contract value.",
     },
     {
       title: "Unilateral termination right",
-      detail: "Counterparty can terminate with only 7 days notice (§12.1), creating operational instability.",
+      detail:
+        "Counterparty can terminate with only 7 days notice (§12.1), creating operational instability.",
     },
     {
       title: "Overbroad IP assignment",
-      detail: "All work product is assigned permanently without compensation or carve-outs (Section 14).",
+      detail:
+        "All work product is assigned permanently without compensation or carve-outs (Section 14).",
     },
   ],
   summary:
@@ -102,7 +105,7 @@ export const analyzeContract = createServerFn({ method: "POST" })
             contents: [{ parts: [{ text: buildPrompt(data.fileName, data.fileText) }] }],
             generationConfig: { temperature: 0.2, maxOutputTokens: 1024 },
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -110,13 +113,16 @@ export const analyzeContract = createServerFn({ method: "POST" })
         return { ...FALLBACK };
       }
 
-      const result = await response.json() as {
+      const result = (await response.json()) as {
         candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
       };
 
       const raw = result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
       // Strip potential markdown fences
-      const jsonStr = raw.replace(/^```json\n?/, "").replace(/\n?```$/, "").trim();
+      const jsonStr = raw
+        .replace(/^```json\n?/, "")
+        .replace(/\n?```$/, "")
+        .trim();
       const parsed = JSON.parse(jsonStr) as {
         riskScore: number;
         clauses: ClauseChip[];

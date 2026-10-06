@@ -32,16 +32,22 @@ import { useSidebar } from "@/hooks/useSidebar";
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, path: "/" },
-  { id: "intake",    label: "Intake Agent",    icon: UserRound, path: "/intake" },
-  { id: "contracts", label: "Contract Review", icon: FileText,  path: "/contracts" },
-  { id: "drafting",  label: "Drafting Agent",  icon: PenLine,   path: "/drafting" },
-  { id: "research",  label: "Research Agent",  icon: Search,    path: "/research" },
-  { id: "memory",    label: "Case Memory",     icon: FolderOpen,path: "/memory" },
+  { id: "intake", label: "Intake Agent", icon: UserRound, path: "/intake" },
+  { id: "contracts", label: "Contract Review", icon: FileText, path: "/contracts" },
+  { id: "drafting", label: "Drafting Agent", icon: PenLine, path: "/drafting" },
+  { id: "research", label: "Research Agent", icon: Search, path: "/research" },
+  { id: "memory", label: "Case Memory", icon: FolderOpen, path: "/memory" },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function SectionCard({ children, danger = false }: { children: React.ReactNode; danger?: boolean }) {
+function SectionCard({
+  children,
+  danger = false,
+}: {
+  children: React.ReactNode;
+  danger?: boolean;
+}) {
   return (
     <div
       className="card-hover rounded-xl p-7 flex flex-col gap-6"
@@ -55,11 +61,23 @@ function SectionCard({ children, danger = false }: { children: React.ReactNode; 
   );
 }
 
-function CardHeader({ title, subtitle, danger = false }: { title: string; subtitle: string; danger?: boolean }) {
+function CardHeader({
+  title,
+  subtitle,
+  danger = false,
+}: {
+  title: string;
+  subtitle: string;
+  danger?: boolean;
+}) {
   return (
     <div className="flex flex-col gap-1 pb-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
-      <h2 className="text-base font-semibold" style={{ color: danger ? "#EF4444" : "white" }}>{title}</h2>
-      <p className="text-sm" style={{ color: "#7A7A8C" }}>{subtitle}</p>
+      <h2 className="text-base font-semibold" style={{ color: danger ? "#EF4444" : "white" }}>
+        {title}
+      </h2>
+      <p className="text-sm" style={{ color: "#7A7A8C" }}>
+        {subtitle}
+      </p>
     </div>
   );
 }
@@ -95,8 +113,8 @@ function SaveButton({
           background: saved
             ? "rgba(45,212,191,0.2)"
             : saving
-            ? "rgba(124,111,255,0.5)"
-            : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
+              ? "rgba(124,111,255,0.5)"
+              : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
           boxShadow: saved || saving ? "none" : "0 4px 16px rgba(124,111,255,0.3)",
           cursor: saving ? "not-allowed" : "pointer",
           color: saved ? "#2DD4BF" : "white",
@@ -106,7 +124,9 @@ function SaveButton({
         {saving ? (
           <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
         ) : saved ? (
-          <><CheckCircle2 className="h-4 w-4" /> Saved</>
+          <>
+            <CheckCircle2 className="h-4 w-4" /> Saved
+          </>
         ) : (
           label
         )}
@@ -165,7 +185,12 @@ export function SettingsPage() {
   }, []);
 
   const displayName = fullName || email.split("@")[0] || "Counselor";
-  const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
@@ -190,14 +215,14 @@ export function SettingsPage() {
       if (!userData.user) throw new Error("Not authenticated");
       const { error } = await supabase
         .from("profiles")
-        .update({ full_name: fullName, firm: firmName } as any)
+        .update({ full_name: fullName, firm: firmName })
         .eq("id", userData.user.id);
       if (error) throw error;
       setSavedProfile(true);
       setTimeout(() => setSavedProfile(false), 3000);
       toast.success("Profile saved");
-    } catch (err: any) {
-      toast.error(err.message ?? "Save failed");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSavingProfile(false);
     }
@@ -243,8 +268,8 @@ export function SettingsPage() {
       await supabase.auth.signOut();
       toast.success("Account deletion initiated — you have been signed out.");
       navigate({ to: "/auth", replace: true });
-    } catch (err: any) {
-      toast.error(err.message ?? "Deletion failed");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Deletion failed");
       setDeleting(false);
     }
   }
@@ -256,7 +281,6 @@ export function SettingsPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
@@ -266,12 +290,19 @@ export function SettingsPage() {
       >
         <div className="p-6 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0" style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}>
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+              style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+            >
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -283,8 +314,12 @@ export function SettingsPage() {
               onClick={() => navigate({ to: path })}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left"
               style={{ color: "#7A7A8C", borderLeft: "3px solid transparent" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "white";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+              }}
             >
               <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
               {label}
@@ -296,7 +331,11 @@ export function SettingsPage() {
           {/* Settings — ACTIVE */}
           <button
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-left mt-3"
-            style={{ color: "#A78BFF", background: "rgba(124,111,255,0.08)", borderLeft: "3px solid #A78BFF" }}
+            style={{
+              color: "#A78BFF",
+              background: "rgba(124,111,255,0.08)",
+              borderLeft: "3px solid #A78BFF",
+            }}
           >
             <Settings className="h-4 w-4 shrink-0" strokeWidth={2.2} />
             Settings
@@ -314,11 +353,14 @@ export function SettingsPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
-
         {/* Header */}
         <header
           className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
-          style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
+          style={{
+            background: "rgba(13,13,22,0.85)",
+            backdropFilter: "blur(20px)",
+            borderBottom: "1px solid #1E1E2E",
+          }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
             <button
@@ -328,7 +370,12 @@ export function SettingsPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate({ to: "/" })} className="hover:text-white transition-colors">Dashboard</button>
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="hover:text-white transition-colors"
+            >
+              Dashboard
+            </button>
             <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-white font-medium">Settings</span>
           </div>
@@ -340,17 +387,35 @@ export function SettingsPage() {
               <Bell className="h-5 w-5" />
             </button>
             <div className="relative group">
-              <button className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}>
+              <button
+                className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+              >
                 {initials}
               </button>
-              <div className="absolute right-0 top-full mt-2 w-44 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50" style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}>
+              <div
+                className="absolute right-0 top-full mt-2 w-44 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50"
+                style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
+              >
                 <div className="p-3 border-b" style={{ borderColor: "#1E1E2E" }}>
                   <p className="text-xs font-medium text-white truncate">{displayName}</p>
-                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>{email}</p>
+                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>
+                    {email}
+                  </p>
                 </div>
-                <button onClick={signOut} className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl" style={{ color: "#7A7A8C" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}>
+                <button
+                  onClick={signOut}
+                  className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl"
+                  style={{ color: "#7A7A8C" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "white";
+                    (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
+                >
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
                 </button>
@@ -362,7 +427,6 @@ export function SettingsPage() {
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-2xl mx-auto flex flex-col gap-5">
-
             {/* Page title */}
             <div className="mb-2">
               <h1 className="text-2xl md:text-3xl font-bold text-white">Settings</h1>
@@ -385,7 +449,9 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-base font-semibold text-white">{displayName}</p>
-                  <p className="text-sm" style={{ color: "#7A7A8C" }}>{email}</p>
+                  <p className="text-sm" style={{ color: "#7A7A8C" }}>
+                    {email}
+                  </p>
                 </div>
               </div>
 
@@ -438,12 +504,20 @@ export function SettingsPage() {
                 </div>
               </div>
 
-              <SaveButton label="Save Profile" saving={savingProfile} saved={savedProfile} onClick={saveProfile} />
+              <SaveButton
+                label="Save Profile"
+                saving={savingProfile}
+                saved={savedProfile}
+                onClick={saveProfile}
+              />
             </SectionCard>
 
             {/* ── Card 2: API Configuration ── */}
             <SectionCard>
-              <CardHeader title="API Configuration" subtitle="Connect your Gemini API key and backend services" />
+              <CardHeader
+                title="API Configuration"
+                subtitle="Connect your Gemini API key and backend services"
+              />
 
               <div className="flex flex-col gap-5">
                 {/* Gemini Key */}
@@ -463,13 +537,19 @@ export function SettingsPage() {
                       onClick={() => setShowKey((v) => !v)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                       style={{ color: "#7A7A8C" }}
-                      onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"}
-                      onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "#A78BFF")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C")
+                      }
                     >
                       {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
-                  <p className="text-xs" style={{ color: "#7A7A8C" }}>Used for AI analysis, drafting, and research · stored in your .env file</p>
+                  <p className="text-xs" style={{ color: "#7A7A8C" }}>
+                    Used for AI analysis, drafting, and research · stored in your .env file
+                  </p>
                 </div>
 
                 {/* Backend URL */}
@@ -495,23 +575,45 @@ export function SettingsPage() {
                         color: connected ? "#2DD4BF" : "#7A7A8C",
                         cursor: testing ? "not-allowed" : "pointer",
                       }}
-                      onMouseEnter={(e) => { if (!connected) { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; } }}
-                      onMouseLeave={(e) => { if (!connected) { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; } }}
+                      onMouseEnter={(e) => {
+                        if (!connected) {
+                          (e.currentTarget as HTMLButtonElement).style.borderColor =
+                            "rgba(124,111,255,0.4)";
+                          (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!connected) {
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+                          (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                        }
+                      }}
                     >
                       {testing ? (
                         <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                       ) : connected ? (
-                        <><CheckCircle2 className="h-4 w-4" /> Connected</>
+                        <>
+                          <CheckCircle2 className="h-4 w-4" /> Connected
+                        </>
                       ) : (
-                        <><Wifi className="h-4 w-4" /> Test</>
+                        <>
+                          <Wifi className="h-4 w-4" /> Test
+                        </>
                       )}
                     </button>
                   </div>
-                  <p className="text-xs" style={{ color: "#7A7A8C" }}>Your local or cloud-hosted FastAPI endpoint</p>
+                  <p className="text-xs" style={{ color: "#7A7A8C" }}>
+                    Your local or cloud-hosted FastAPI endpoint
+                  </p>
                 </div>
               </div>
 
-              <SaveButton label="Save API Settings" saving={savingApi} saved={savedApi} onClick={saveApiSettings} />
+              <SaveButton
+                label="Save API Settings"
+                saving={savingApi}
+                saved={savedApi}
+                onClick={saveApiSettings}
+              />
             </SectionCard>
 
             {/* ── Card 3: Appearance ── */}
@@ -525,7 +627,9 @@ export function SettingsPage() {
                     <Moon className="h-4 w-4" style={{ color: "#A78BFF" }} />
                     <span className="text-sm font-medium text-white">Dark Mode</span>
                   </div>
-                  <p className="text-xs mt-0.5" style={{ color: "#7A7A8C" }}>More themes coming soon</p>
+                  <p className="text-xs mt-0.5" style={{ color: "#7A7A8C" }}>
+                    More themes coming soon
+                  </p>
                 </div>
                 {/* Disabled toggle */}
                 <div className="flex items-center gap-2" title="More themes coming soon">
@@ -551,7 +655,10 @@ export function SettingsPage() {
                   <div
                     key={label}
                     className="relative flex flex-col items-center gap-2"
-                    style={{ opacity: selected ? 1 : 0.4, cursor: selected ? "default" : "not-allowed" }}
+                    style={{
+                      opacity: selected ? 1 : 0.4,
+                      cursor: selected ? "default" : "not-allowed",
+                    }}
                   >
                     <div
                       className="w-20 h-14 rounded-lg flex flex-col justify-end p-2"
@@ -563,11 +670,19 @@ export function SettingsPage() {
                     >
                       {/* Mini UI preview */}
                       <div className="flex flex-col gap-1">
-                        <div className="h-1 rounded-full w-3/4" style={{ background: selected ? "#7C6FFF" : "#333" }} />
+                        <div
+                          className="h-1 rounded-full w-3/4"
+                          style={{ background: selected ? "#7C6FFF" : "#333" }}
+                        />
                         <div className="h-1 rounded-full w-1/2" style={{ background: "#333" }} />
                       </div>
                     </div>
-                    <span className="text-xs font-medium" style={{ color: selected ? "#A78BFF" : "#7A7A8C" }}>{label}</span>
+                    <span
+                      className="text-xs font-medium"
+                      style={{ color: selected ? "#A78BFF" : "#7A7A8C" }}
+                    >
+                      {label}
+                    </span>
                     {selected && (
                       <div
                         className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full flex items-center justify-center"
@@ -591,14 +706,25 @@ export function SettingsPage() {
 
             {/* ── Card 4: Danger Zone ── */}
             <SectionCard danger>
-              <CardHeader title="Danger Zone" subtitle="Irreversible actions — proceed with caution" danger />
+              <CardHeader
+                title="Danger Zone"
+                subtitle="Irreversible actions — proceed with caution"
+                danger
+              />
 
               <div
                 className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg p-4"
-                style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)" }}
+                style={{
+                  background: "rgba(239,68,68,0.04)",
+                  border: "1px solid rgba(239,68,68,0.15)",
+                }}
               >
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 mt-0.5 shrink-0" style={{ color: "#EF4444" }} strokeWidth={2} />
+                  <AlertTriangle
+                    className="h-5 w-5 mt-0.5 shrink-0"
+                    style={{ color: "#EF4444" }}
+                    strokeWidth={2}
+                  />
                   <div>
                     <p className="text-sm font-semibold" style={{ color: "#EF4444" }}>
                       {deleteConfirm ? "Are you absolutely sure?" : "Delete Account"}
@@ -615,7 +741,11 @@ export function SettingsPage() {
                     <button
                       onClick={() => setDeleteConfirm(false)}
                       className="px-3 py-2 rounded-lg text-xs font-medium transition-all"
-                      style={{ background: "transparent", border: "1px solid #1E1E2E", color: "#7A7A8C" }}
+                      style={{
+                        background: "transparent",
+                        border: "1px solid #1E1E2E",
+                        color: "#7A7A8C",
+                      }}
                     >
                       Cancel
                     </button>
@@ -630,8 +760,15 @@ export function SettingsPage() {
                       color: "#EF4444",
                       cursor: deleting ? "not-allowed" : "pointer",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.12)"}
-                    onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.background = deleteConfirm ? "rgba(239,68,68,0.15)" : "transparent"}
+                    onMouseEnter={(e) =>
+                      ((e.currentTarget as HTMLButtonElement).style.background =
+                        "rgba(239,68,68,0.12)")
+                    }
+                    onMouseLeave={(e) =>
+                      ((e.currentTarget as HTMLButtonElement).style.background = deleteConfirm
+                        ? "rgba(239,68,68,0.15)"
+                        : "transparent")
+                    }
                   >
                     {deleting ? (
                       <span className="h-4 w-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />

@@ -100,7 +100,7 @@ export type IntakeResponse = {
 
 // POST /contract-review
 export type ContractReviewPayload = {
-  file_url: string;       // Supabase Storage public URL
+  file_url: string; // Supabase Storage public URL
   file_name: string;
   file_size: number;
 };
@@ -155,7 +155,7 @@ export async function callIntake(payload: IntakePayload): Promise<IntakeResponse
  * Accepts a Supabase Storage file URL and returns contract analysis.
  */
 export async function callContractReview(
-  payload: ContractReviewPayload
+  payload: ContractReviewPayload,
 ): Promise<ContractReviewResponse> {
   return post<ContractReviewResponse>("/contract-review", payload);
 }

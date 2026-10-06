@@ -53,18 +53,18 @@
   --radius: 0.75rem;
 
   /* Surfaces */
-  --background: oklch(0.09 0.015 280);        /* #0A0A0F */
-  --foreground: oklch(0.96 0.012 285);        /* #F0F0FF */
-  --surface: oklch(0.14 0.02 280);            /* #12121A */
+  --background: oklch(0.09 0.015 280); /* #0A0A0F */
+  --foreground: oklch(0.96 0.012 285); /* #F0F0FF */
+  --surface: oklch(0.14 0.02 280); /* #12121A */
   --card: oklch(0.14 0.02 280);
   --card-foreground: oklch(0.96 0.012 285);
   --popover: oklch(0.14 0.02 280);
   --popover-foreground: oklch(0.96 0.012 285);
 
   /* Brand */
-  --primary: oklch(0.64 0.205 285);           /* #7C6FFF electric violet */
+  --primary: oklch(0.64 0.205 285); /* #7C6FFF electric violet */
   --primary-foreground: oklch(0.98 0.005 285);
-  --primary-glow: oklch(0.74 0.155 290);      /* #A78BFF */
+  --primary-glow: oklch(0.74 0.155 290); /* #A78BFF */
 
   /* Secondary */
   --secondary: oklch(0.2 0.025 280);
@@ -72,18 +72,18 @@
 
   /* Muted */
   --muted: oklch(0.18 0.022 280);
-  --muted-foreground: oklch(0.6 0.04 285);    /* #7A7A9D */
+  --muted-foreground: oklch(0.6 0.04 285); /* #7A7A9D */
 
   /* Accent (teal-mint glow) */
-  --accent: oklch(0.78 0.15 175);             /* #00D4AA */
+  --accent: oklch(0.78 0.15 175); /* #00D4AA */
   --accent-foreground: oklch(0.09 0.015 280);
 
   /* Destructive */
-  --destructive: oklch(0.68 0.21 20);         /* #FF5C6C */
+  --destructive: oklch(0.68 0.21 20); /* #FF5C6C */
   --destructive-foreground: oklch(0.98 0.005 285);
 
   /* Borders / inputs */
-  --border: oklch(0.24 0.025 280);            /* #1E1E2E */
+  --border: oklch(0.24 0.025 280); /* #1E1E2E */
   --input: oklch(0.24 0.025 280);
   --ring: oklch(0.64 0.205 285);
 }
@@ -121,34 +121,68 @@
 /* ─── Keyframes ───────────────────────────────────────────────────────────── */
 
 @keyframes legal-pulse {
-  0%   { transform: translateY(0);    opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translateY(100%); opacity: 0; }
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes page-enter {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes ripple-expand {
-  to { transform: scale(4); opacity: 0; }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 
 @keyframes skeleton-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 @keyframes nav-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ─── @utility classes (Tailwind v4) ─────────────────────────────────────── */
@@ -156,25 +190,13 @@
 /* Ambient radial glow used on auth and dashboard backdrops */
 @utility bg-aurora {
   background-image:
-    radial-gradient(
-      ellipse 60% 50% at 12% 0%,
-      oklch(0.64 0.205 285 / 0.18) 0%,
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 50% 40% at 100% 100%,
-      oklch(0.78 0.15 175 / 0.08) 0%,
-      transparent 65%
-    );
+    radial-gradient(ellipse 60% 50% at 12% 0%, oklch(0.64 0.205 285 / 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, oklch(0.78 0.15 175 / 0.08) 0%, transparent 65%);
 }
 
 /* Violet gradient surface */
 @utility bg-violet-gradient {
-  background-image: linear-gradient(
-    135deg,
-    oklch(0.64 0.205 285) 0%,
-    oklch(0.74 0.155 290) 100%
-  );
+  background-image: linear-gradient(135deg, oklch(0.64 0.205 285) 0%, oklch(0.74 0.155 290) 100%);
 }
 
 /* Hover glow used on primary CTAs */
@@ -187,7 +209,7 @@
 /* Subtle hairline grid for premium feel */
 @utility bg-grid {
   background-image:
-    linear-gradient(to right,  oklch(0.24 0.025 280 / 0.4) 1px, transparent 1px),
+    linear-gradient(to right, oklch(0.24 0.025 280 / 0.4) 1px, transparent 1px),
     linear-gradient(to bottom, oklch(0.24 0.025 280 / 0.4) 1px, transparent 1px);
   background-size: 56px 56px;
 }
@@ -214,12 +236,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    oklch(0.64 0.205 285 / 0.9),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, oklch(0.64 0.205 285 / 0.9), transparent);
   animation: legal-pulse 3.2s ease-in-out infinite;
 }
 
@@ -232,7 +249,9 @@
 /* ─── Card Hover Lift ─────────────────────────────────────────────────────── */
 
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card-hover:hover {
@@ -269,12 +288,7 @@
 /* ─── Skeleton Loader ─────────────────────────────────────────────────────── */
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    #12121a 25%,
-    #1a1a28 50%,
-    #12121a 75%
-  );
+  background: linear-gradient(90deg, #12121a 25%, #1a1a28 50%, #12121a 75%);
   background-size: 800px 100%;
   animation: skeleton-shimmer 1.6s infinite linear;
   border-radius: 6px;

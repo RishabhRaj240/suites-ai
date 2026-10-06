@@ -21,35 +21,40 @@ Suites AI is an AI-powered legal workspace built for lawyers and legal professio
 
 ## ✨ Features
 
-| Agent | Description |
-|-------|-------------|
-| 👤 **Intake Agent** | Collects client information and auto-generates an AI case summary |
-| 📄 **Contract Review Agent** | Analyzes uploaded contracts for risk score, key clauses, and red flags |
-| ✍️ **Drafting Agent** | Generates legal notices, NDAs, demand letters, and cease & desist documents |
-| 🔍 **Research Agent** | Searches legal statutes, precedents, and information via AI |
-| 🗂️ **Case Memory** | Stores and retrieves full case history, linked documents, and research logs |
-| 🏠 **Dashboard** | Central lawyer workspace with quick actions, metrics, and activity feed |
+| Agent                        | Description                                                                 |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| 👤 **Intake Agent**          | Collects client information and auto-generates an AI case summary           |
+| 📄 **Contract Review Agent** | Analyzes uploaded contracts for risk score, key clauses, and red flags      |
+| ✍️ **Drafting Agent**        | Generates legal notices, NDAs, demand letters, and cease & desist documents |
+| 🔍 **Research Agent**        | Searches legal statutes, precedents, and information via AI                 |
+| 🗂️ **Case Memory**           | Stores and retrieves full case history, linked documents, and research logs |
+| 🏠 **Dashboard**             | Central lawyer workspace with quick actions, metrics, and activity feed     |
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Lovable** — Sign-in page & main dashboard UI
 - **Antigravity** — All AI agent modules (Intake, Contract Review, Drafting, Research, Memory)
 - **React** — Component framework
 - **Tailwind CSS** — Styling
 
 ### Backend
+
 - **FastAPI** — REST API server handling all AI agent logic
 
 ### Database & Storage
+
 - **Supabase** — PostgreSQL database, authentication, and file storage
 
 ### AI
+
 - **Gemini 2.5 Flash-Lite** — Powers all five AI agents
 
 ### Deployment
+
 - **Vercel** — Frontend hosting
 - **Render** — FastAPI backend hosting
 
@@ -108,6 +113,7 @@ uvicorn main:app --reload
 ### 4. Environment Variables
 
 **Frontend (`.env.local`)**
+
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -115,6 +121,7 @@ VITE_API_BASE_URL=https://your-render-backend.onrender.com
 ```
 
 **Backend (`.env`)**
+
 ```env
 GEMINI_API_KEY=your_gemini_api_key
 SUPABASE_URL=your_supabase_url
@@ -125,12 +132,12 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/intake` | Submit client info, returns AI case summary |
-| `POST` | `/contract-review` | Accepts Supabase file URL, returns contract analysis |
-| `POST` | `/draft` | Accepts document type + details, returns generated document |
-| `POST` | `/research` | Accepts legal query, returns AI research results |
+| Method | Endpoint           | Description                                                 |
+| ------ | ------------------ | ----------------------------------------------------------- |
+| `POST` | `/intake`          | Submit client info, returns AI case summary                 |
+| `POST` | `/contract-review` | Accepts Supabase file URL, returns contract analysis        |
+| `POST` | `/draft`           | Accepts document type + details, returns generated document |
+| `POST` | `/research`        | Accepts legal query, returns AI research results            |
 
 All endpoints require a Supabase Bearer token in the `Authorization` header.
 
@@ -172,14 +179,14 @@ suites-ai/
 
 ## 🎨 Design System
 
-| Token | Value |
-|-------|-------|
-| Background | `#0A0A0F` |
-| Surface | `#12121A` |
-| Primary Accent | `#7C6FFF` (Electric Violet) |
-| Secondary Accent | `#00D4AA` (Teal Mint) |
-| Text Primary | `#F0F0FF` |
-| Font | Inter + JetBrains Mono |
+| Token            | Value                       |
+| ---------------- | --------------------------- |
+| Background       | `#0A0A0F`                   |
+| Surface          | `#12121A`                   |
+| Primary Accent   | `#7C6FFF` (Electric Violet) |
+| Secondary Accent | `#00D4AA` (Teal Mint)       |
+| Text Primary     | `#F0F0FF`                   |
+| Font             | Inter + JetBrains Mono      |
 
 ---
 

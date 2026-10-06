@@ -41,14 +41,41 @@ const NAV_ITEMS = [
   { id: "memory", label: "Case Memory", icon: FolderOpen, path: "/" },
 ];
 
-const QUICK_TAGS = ["Contract Law", "Criminal Procedure", "IP & Patents", "Employment Law", "Constitutional Law"];
+const QUICK_TAGS = [
+  "Contract Law",
+  "Criminal Procedure",
+  "IP & Patents",
+  "Employment Law",
+  "Constitutional Law",
+];
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  case_law:   { bg: "rgba(124,111,255,0.08)", text: "#A78BFF", border: "rgba(124,111,255,0.2)", label: "Case Law" },
-  statute:    { bg: "rgba(34,197,94,0.08)",   text: "#22C55E", border: "rgba(34,197,94,0.2)",   label: "Statute" },
-  academic:   { bg: "rgba(245,158,11,0.08)",  text: "#F59E0B", border: "rgba(245,158,11,0.2)",  label: "Academic" },
-  regulation: { bg: "rgba(45,212,191,0.08)",  text: "#2DD4BF", border: "rgba(45,212,191,0.2)",  label: "Regulation" },
-};
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> =
+  {
+    case_law: {
+      bg: "rgba(124,111,255,0.08)",
+      text: "#A78BFF",
+      border: "rgba(124,111,255,0.2)",
+      label: "Case Law",
+    },
+    statute: {
+      bg: "rgba(34,197,94,0.08)",
+      text: "#22C55E",
+      border: "rgba(34,197,94,0.2)",
+      label: "Statute",
+    },
+    academic: {
+      bg: "rgba(245,158,11,0.08)",
+      text: "#F59E0B",
+      border: "rgba(245,158,11,0.2)",
+      label: "Academic",
+    },
+    regulation: {
+      bg: "rgba(45,212,191,0.08)",
+      text: "#2DD4BF",
+      border: "rgba(45,212,191,0.2)",
+      label: "Regulation",
+    },
+  };
 
 // ─── Relevance Arc ─────────────────────────────────────────────────────────────
 
@@ -64,20 +91,29 @@ function RelevanceArc({ score }: { score: number }) {
         <svg width={44} height={44} style={{ transform: "rotate(-90deg)" }}>
           <circle cx={22} cy={22} r={r} fill="none" stroke="#1E1E2E" strokeWidth={4} />
           <circle
-            cx={22} cy={22} r={r}
+            cx={22}
+            cy={22}
+            r={r}
             fill="none"
             stroke={color}
             strokeWidth={4}
             strokeLinecap="round"
             strokeDasharray={`${filled} ${circ}`}
-            style={{ filter: `drop-shadow(0 0 4px ${color}88)`, transition: "stroke-dasharray 0.8s ease" }}
+            style={{
+              filter: `drop-shadow(0 0 4px ${color}88)`,
+              transition: "stroke-dasharray 0.8s ease",
+            }}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[10px] font-bold" style={{ color }}>{score}</span>
+          <span className="text-[10px] font-bold" style={{ color }}>
+            {score}
+          </span>
         </div>
       </div>
-      <span className="text-[10px] uppercase tracking-wide" style={{ color: "#7A7A8C" }}>Match</span>
+      <span className="text-[10px] uppercase tracking-wide" style={{ color: "#7A7A8C" }}>
+        Match
+      </span>
     </div>
   );
 }
@@ -104,8 +140,14 @@ function DeepDivePanel({ brief, loading }: { brief: DeepDiveResult | null; loadi
           }
         `}</style>
         <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#2DD4BF" }} />
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#2DD4BF" }}>
+          <span
+            className="h-1.5 w-1.5 rounded-full animate-pulse"
+            style={{ background: "#2DD4BF" }}
+          />
+          <span
+            className="text-xs font-semibold uppercase tracking-widest"
+            style={{ color: "#2DD4BF" }}
+          >
             Deep Dive Research Brief
           </span>
         </div>
@@ -131,16 +173,24 @@ function DeepDivePanel({ brief, loading }: { brief: DeepDiveResult | null; loadi
     >
       <div className="flex items-center gap-2">
         <BookOpen className="h-3.5 w-3.5 shrink-0" style={{ color: "#2DD4BF" }} />
-        <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#2DD4BF" }}>
+        <span
+          className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: "#2DD4BF" }}
+        >
           Research Brief
         </span>
       </div>
       {sections.map(({ label, text }) => (
         <div key={label}>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "#7A7A8C" }}>
+          <p
+            className="text-xs font-semibold uppercase tracking-wider mb-1.5"
+            style={{ color: "#7A7A8C" }}
+          >
             {label}
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: "#c8c4d7" }}>{text}</p>
+          <p className="text-sm leading-relaxed" style={{ color: "#c8c4d7" }}>
+            {text}
+          </p>
         </div>
       ))}
     </div>
@@ -171,7 +221,10 @@ function ResultCard({
       if (next && !brief && !loadingBrief) {
         setLoadingBrief(true);
         deepDiveResearch({ data: { query, title: result.title, excerpt: result.excerpt } })
-          .then((res) => { setBrief(res); setLoadingBrief(false); })
+          .then((res) => {
+            setBrief(res);
+            setLoadingBrief(false);
+          })
           .catch(() => setLoadingBrief(false));
       }
       return next;
@@ -186,8 +239,10 @@ function ResultCard({
         border: "1px solid #1E1E2E",
         animationDelay: `${index * 80}ms`,
       }}
-      onMouseEnter={(e) => (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(124,111,255,0.3)"}
-      onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.borderColor = "#1E1E2E"}
+      onMouseEnter={(e) =>
+        ((e.currentTarget as HTMLDivElement).style.borderColor = "rgba(124,111,255,0.3)")
+      }
+      onMouseLeave={(e) => ((e.currentTarget as HTMLDivElement).style.borderColor = "#1E1E2E")}
     >
       {/* Row 1: Meta */}
       <div className="flex flex-wrap items-center gap-2">
@@ -209,7 +264,9 @@ function ResultCard({
       <h3 className="text-base font-semibold text-white leading-snug">{result.title}</h3>
 
       {/* Row 3: Excerpt */}
-      <p className="text-sm leading-relaxed" style={{ color: "#7A7A8C" }}>{result.excerpt}</p>
+      <p className="text-sm leading-relaxed" style={{ color: "#7A7A8C" }}>
+        {result.excerpt}
+      </p>
 
       {/* Row 4: Actions */}
       <div className="flex items-center gap-3">
@@ -221,8 +278,14 @@ function ResultCard({
             color: "#A78BFF",
             border: "1px solid rgba(124,111,255,0.25)",
           }}
-          onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.18)"}
-          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.background = expanded ? "rgba(124,111,255,0.15)" : "rgba(124,111,255,0.08)"}
+          onMouseEnter={(e) =>
+            ((e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.18)")
+          }
+          onMouseLeave={(e) =>
+            ((e.currentTarget as HTMLButtonElement).style.background = expanded
+              ? "rgba(124,111,255,0.15)"
+              : "rgba(124,111,255,0.08)")
+          }
         >
           {expanded ? (
             <>
@@ -285,13 +348,14 @@ export function ResearchAgentPage() {
 
       // Load recent searches from Supabase
       try {
-        const { data: recents } = await (supabase.from as any)("research_queries")
+        const { data: recents } = await supabase
+          .from("research_queries")
           .select("query")
           .eq("user_id", data.user.id)
           .order("created_at", { ascending: false })
           .limit(5);
         if (recents) {
-          const unique = [...new Set<string>(recents.map((r: { query: string }) => r.query))];
+          const unique = [...new Set<string>(recents.map((r) => r.query))];
           setRecentSearches(unique);
         }
       } catch {
@@ -303,7 +367,12 @@ export function ResearchAgentPage() {
   const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   async function handleSearch(q?: string) {
     const searchQuery = (q ?? query).trim();
@@ -346,13 +415,13 @@ export function ResearchAgentPage() {
         if (userData.user) {
           const uid = userData.user.id;
           // Legacy table (backward compat)
-          await (supabase.from as any)("research_queries").insert({
+          await supabase.from("research_queries").insert({
             user_id: uid,
             query: searchQuery,
             results: res,
           });
           // Canonical spec table
-          await (supabase.from as any)("research_logs").insert({
+          await supabase.from("research_logs").insert({
             user_id: uid,
             query: searchQuery,
             result_json: res,
@@ -361,8 +430,10 @@ export function ResearchAgentPage() {
             setRecentSearches((prev) => [searchQuery, ...prev].slice(0, 5));
           }
         }
-      } catch { /* silent */ }
-    } catch (err: any) {
+      } catch {
+        /* silent */
+      }
+    } catch {
       toast.error("Search failed, please try again");
     } finally {
       setSearching(false);
@@ -393,7 +464,6 @@ export function ResearchAgentPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
@@ -410,8 +480,12 @@ export function ResearchAgentPage() {
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -457,11 +531,14 @@ export function ResearchAgentPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
-
         {/* Header */}
         <header
           className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
-          style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
+          style={{
+            background: "rgba(13,13,22,0.85)",
+            backdropFilter: "blur(20px)",
+            borderBottom: "1px solid #1E1E2E",
+          }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
             <button
@@ -471,7 +548,12 @@ export function ResearchAgentPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate({ to: "/" })} className="hover:text-white transition-colors">Dashboard</button>
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="hover:text-white transition-colors"
+            >
+              Dashboard
+            </button>
             <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-white font-medium">Research Agent</span>
           </div>
@@ -495,14 +577,22 @@ export function ResearchAgentPage() {
               >
                 <div className="p-3 border-b" style={{ borderColor: "#1E1E2E" }}>
                   <p className="text-xs font-medium text-white truncate">{displayName}</p>
-                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>{profile?.email}</p>
+                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>
+                    {profile?.email}
+                  </p>
                 </div>
                 <button
                   onClick={signOut}
                   className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl"
                   style={{ color: "#7A7A8C" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "white";
+                    (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
@@ -515,14 +605,20 @@ export function ResearchAgentPage() {
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-4xl mx-auto flex flex-col gap-6 lg:gap-8">
-
             {/* Page hero */}
             <section className="flex flex-col items-center text-center gap-4">
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-                style={{ background: "rgba(167,139,255,0.1)", color: "#A78BFF", border: "1px solid rgba(167,139,255,0.2)" }}
+                style={{
+                  background: "rgba(167,139,255,0.1)",
+                  color: "#A78BFF",
+                  border: "1px solid rgba(167,139,255,0.2)",
+                }}
               >
-                <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
+                <span
+                  className="h-1.5 w-1.5 rounded-full animate-pulse"
+                  style={{ background: "#A78BFF" }}
+                />
                 Research Agent Active
               </span>
               <h1 className="text-2xl md:text-4xl font-bold text-white">Legal Research</h1>
@@ -542,7 +638,10 @@ export function ResearchAgentPage() {
                   }}
                 >
                   <div className="pl-4 pr-2 flex items-center shrink-0">
-                    <Search className="h-4 w-4" style={{ color: searchFocused ? "#A78BFF" : "#7A7A8C" }} />
+                    <Search
+                      className="h-4 w-4"
+                      style={{ color: searchFocused ? "#A78BFF" : "#7A7A8C" }}
+                    />
                   </div>
                   <input
                     ref={inputRef}
@@ -560,8 +659,12 @@ export function ResearchAgentPage() {
                       onClick={() => setQuery("")}
                       className="p-2 rounded-lg shrink-0 transition-colors"
                       style={{ color: "#7A7A8C" }}
-                      onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "white"}
-                      onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "white")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C")
+                      }
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -572,7 +675,9 @@ export function ResearchAgentPage() {
                     disabled={searching}
                     className="hidden sm:flex h-full px-5 text-sm font-semibold text-white items-center gap-2 shrink-0 transition-all duration-200"
                     style={{
-                      background: searching ? "rgba(124,111,255,0.5)" : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
+                      background: searching
+                        ? "rgba(124,111,255,0.5)"
+                        : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
                       borderLeft: "1px solid rgba(124,111,255,0.3)",
                       cursor: searching ? "not-allowed" : "pointer",
                       margin: "8px",
@@ -596,7 +701,9 @@ export function ResearchAgentPage() {
                   disabled={searching}
                   className="sm:hidden mt-2 w-full py-3 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200"
                   style={{
-                    background: searching ? "rgba(124,111,255,0.5)" : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
+                    background: searching
+                      ? "rgba(124,111,255,0.5)"
+                      : "linear-gradient(135deg, #7C6FFF, #A78BFF)",
                     cursor: searching ? "not-allowed" : "pointer",
                   }}
                 >
@@ -622,8 +729,14 @@ export function ResearchAgentPage() {
                         color: "#A78BFF",
                         border: "1px solid rgba(124,111,255,0.2)",
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.18)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.08)"; }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.background =
+                          "rgba(124,111,255,0.18)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.background =
+                          "rgba(124,111,255,0.08)";
+                      }}
                     >
                       {tag}
                     </button>
@@ -635,7 +748,10 @@ export function ResearchAgentPage() {
             {/* Recent searches */}
             {!results && !searching && recentSearches.length > 0 && (
               <section>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#7A7A8C" }}>
+                <p
+                  className="text-xs font-semibold uppercase tracking-widest mb-3"
+                  style={{ color: "#7A7A8C" }}
+                >
                   Recent Searches
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -649,8 +765,15 @@ export function ResearchAgentPage() {
                         border: "1px solid #1E1E2E",
                         color: "#c8c4d7",
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#c8c4d7"; }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor =
+                          "rgba(124,111,255,0.4)";
+                        (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+                        (e.currentTarget as HTMLButtonElement).style.color = "#c8c4d7";
+                      }}
                     >
                       <Clock className="h-3.5 w-3.5 shrink-0" style={{ color: "#7A7A8C" }} />
                       {q}
@@ -676,7 +799,10 @@ export function ResearchAgentPage() {
                   }
                 `}</style>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
+                  <span
+                    className="h-1.5 w-1.5 rounded-full animate-pulse"
+                    style={{ background: "#A78BFF" }}
+                  />
                   <p className="text-sm font-medium" style={{ color: "#A78BFF" }}>
                     Searching legal databases...
                   </p>
@@ -714,9 +840,20 @@ export function ResearchAgentPage() {
                   <button
                     onClick={handleNewSearch}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200"
-                    style={{ background: "transparent", border: "1px solid #1E1E2E", color: "#7A7A8C" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; }}
+                    style={{
+                      background: "transparent",
+                      border: "1px solid #1E1E2E",
+                      color: "#7A7A8C",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.borderColor =
+                        "rgba(124,111,255,0.4)";
+                      (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+                      (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    }}
                   >
                     <Search className="h-3.5 w-3.5" />
                     New Search
@@ -734,26 +871,44 @@ export function ResearchAgentPage() {
               <section className="flex flex-col items-center gap-6 py-8">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
                   {[
-                    { label: "Case Law", desc: "Search Supreme Court and circuit court decisions", icon: "⚖️" },
-                    { label: "Statutes", desc: "Federal and state legislative authority", icon: "📜" },
-                    { label: "Regulations", desc: "Agency rules and administrative guidance", icon: "🏛️" },
+                    {
+                      label: "Case Law",
+                      desc: "Search Supreme Court and circuit court decisions",
+                      icon: "⚖️",
+                    },
+                    {
+                      label: "Statutes",
+                      desc: "Federal and state legislative authority",
+                      icon: "📜",
+                    },
+                    {
+                      label: "Regulations",
+                      desc: "Agency rules and administrative guidance",
+                      icon: "🏛️",
+                    },
                   ].map(({ label, desc, icon }) => (
                     <div
                       key={label}
                       className="rounded-xl p-5 flex flex-col gap-2 cursor-pointer transition-all duration-200"
                       style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
-                      onMouseEnter={(e) => (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(124,111,255,0.3)"}
-                      onMouseLeave={(e) => (e.currentTarget as HTMLDivElement).style.borderColor = "#1E1E2E"}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLDivElement).style.borderColor =
+                          "rgba(124,111,255,0.3)")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLDivElement).style.borderColor = "#1E1E2E")
+                      }
                     >
                       <span className="text-2xl">{icon}</span>
                       <p className="text-sm font-semibold text-white">{label}</p>
-                      <p className="text-xs leading-relaxed" style={{ color: "#7A7A8C" }}>{desc}</p>
+                      <p className="text-xs leading-relaxed" style={{ color: "#7A7A8C" }}>
+                        {desc}
+                      </p>
                     </div>
                   ))}
                 </div>
               </section>
             )}
-
           </div>
         </div>
       </main>

@@ -50,10 +50,8 @@ function RiskGauge({ score }: { score: number }) {
   // Semi-circle: full arc = Math.PI * radius = ~251
   const arcLen = Math.PI * radius;
   const filled = (score / 100) * arcLen;
-  const color =
-    score >= 67 ? "#EF4444" : score >= 34 ? "#F59E0B" : "#22C55E";
-  const label =
-    score >= 67 ? "HIGH RISK" : score >= 34 ? "MEDIUM RISK" : "LOW RISK";
+  const color = score >= 67 ? "#EF4444" : score >= 34 ? "#F59E0B" : "#22C55E";
+  const label = score >= 67 ? "HIGH RISK" : score >= 34 ? "MEDIUM RISK" : "LOW RISK";
 
   // SVG path for a semi-circle arc (left to right, top half)
   // Start at (cx - radius, cy), end at (cx + radius, cy)
@@ -87,21 +85,13 @@ function RiskGauge({ score }: { score: number }) {
           />
         </svg>
         {/* Center label */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-end pb-1"
-        >
-          <span
-            className="text-5xl font-bold leading-none"
-            style={{ color }}
-          >
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
+          <span className="text-5xl font-bold leading-none" style={{ color }}>
             {score}
           </span>
         </div>
       </div>
-      <span
-        className="text-sm font-bold tracking-widest uppercase"
-        style={{ color }}
-      >
+      <span className="text-sm font-bold tracking-widest uppercase" style={{ color }}>
         {label}
       </span>
     </div>
@@ -232,26 +222,42 @@ export function ContractReviewPage() {
   const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   // File selection
   const handleFile = useCallback((f: File) => {
-    const ok = f.type === "application/pdf" ||
+    const ok =
+      f.type === "application/pdf" ||
       f.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-      f.name.endsWith(".pdf") || f.name.endsWith(".docx");
-    if (!ok) { toast.error("Please upload a PDF or DOCX file"); return; }
-    if (f.size > 50 * 1024 * 1024) { toast.error("File must be under 50 MB"); return; }
+      f.name.endsWith(".pdf") ||
+      f.name.endsWith(".docx");
+    if (!ok) {
+      toast.error("Please upload a PDF or DOCX file");
+      return;
+    }
+    if (f.size > 50 * 1024 * 1024) {
+      toast.error("File must be under 50 MB");
+      return;
+    }
     setFile(f);
     setPageState("idle");
     setAnalysis(null);
   }, []);
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const f = e.dataTransfer.files[0];
-    if (f) handleFile(f);
-  }, [handleFile]);
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const f = e.dataTransfer.files[0];
+      if (f) handleFile(f);
+    },
+    [handleFile],
+  );
 
   async function handleAnalyze() {
     if (!file) return;
@@ -282,9 +288,7 @@ export function ContractReviewPage() {
       }
 
       // 3. Get public URL from Supabase Storage (for FastAPI backend)
-      const { data: publicUrlData } = supabase.storage
-        .from("contracts")
-        .getPublicUrl(path);
+      const { data: publicUrlData } = supabase.storage.from("contracts").getPublicUrl(path);
       const filePublicUrl = publicUrlData?.publicUrl ?? "";
 
       // 4. Try FastAPI /contract-review first, fall back to createServerFn
@@ -298,7 +302,12 @@ export function ContractReviewPage() {
           });
           result = {
             riskScore: apiRes.risk_score,
-            riskLabel: apiRes.risk_score >= 67 ? "HIGH RISK" : apiRes.risk_score >= 34 ? "MEDIUM RISK" : "LOW RISK",
+            riskLabel:
+              apiRes.risk_score >= 67
+                ? "HIGH RISK"
+                : apiRes.risk_score >= 34
+                  ? "MEDIUM RISK"
+                  : "LOW RISK",
             clauses: apiRes.key_clauses.map((c) => ({
               label: c.name,
               risk: c.risk,
@@ -321,7 +330,7 @@ export function ContractReviewPage() {
 
       // 4. Save to contracts table
       try {
-        await supabase.from("contracts" as any).insert({
+        await supabase.from("contracts").insert({
           user_id: userData.user.id,
           file_name: file.name,
           file_path: path,
@@ -339,9 +348,9 @@ export function ContractReviewPage() {
       setAnalysis(result);
       setPageState("results");
       toast.success("Contract analyzed successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message || "Analysis failed");
+      toast.error(err instanceof Error ? err.message : "Analysis failed");
       setPageState("idle");
     } finally {
       setUploading(false);
@@ -364,7 +373,6 @@ export function ContractReviewPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
@@ -381,8 +389,12 @@ export function ContractReviewPage() {
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -430,7 +442,6 @@ export function ContractReviewPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
-
         {/* Header */}
         <header
           className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
@@ -448,7 +459,10 @@ export function ContractReviewPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate({ to: "/" })} className="hover:text-white transition-colors">
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="hover:text-white transition-colors"
+            >
               Dashboard
             </button>
             <ChevronRight className="h-3.5 w-3.5" />
@@ -474,14 +488,22 @@ export function ContractReviewPage() {
               >
                 <div className="p-3 border-b" style={{ borderColor: "#1E1E2E" }}>
                   <p className="text-xs font-medium text-white truncate">{displayName}</p>
-                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>{profile?.email}</p>
+                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>
+                    {profile?.email}
+                  </p>
                 </div>
                 <button
                   onClick={signOut}
                   className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl transition-colors"
                   style={{ color: "#7A7A8C" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "white";
+                    (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
@@ -494,7 +516,6 @@ export function ContractReviewPage() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
-
             {/* Page title */}
             <section>
               <span
@@ -505,7 +526,10 @@ export function ContractReviewPage() {
                   border: "1px solid rgba(167,139,255,0.2)",
                 }}
               >
-                <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
+                <span
+                  className="h-1.5 w-1.5 rounded-full animate-pulse"
+                  style={{ background: "#A78BFF" }}
+                />
                 Contract Review Active
               </span>
               <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">Contract Review</h1>
@@ -516,7 +540,6 @@ export function ContractReviewPage() {
 
             {/* Two-column */}
             <div className="grid grid-cols-1 lg:grid-cols-[40fr_60fr] gap-6 lg:gap-8">
-
               {/* ── LEFT: Upload + Scan ── */}
               <div className="flex flex-col gap-6">
                 <div
@@ -525,24 +548,26 @@ export function ContractReviewPage() {
                 >
                   {/* Drop zone */}
                   <div
-                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOver(true);
+                    }}
                     onDragLeave={() => setDragOver(false)}
                     onDrop={onDrop}
                     onClick={() => fileInputRef.current?.click()}
                     className="flex flex-col items-center justify-center gap-3 cursor-pointer rounded-xl transition-all duration-200 py-10 px-6 text-center"
                     style={{
-                      border: dragOver
-                        ? "2px solid #7C6FFF"
-                        : "2px dashed rgba(124,111,255,0.35)",
-                      background: dragOver
-                        ? "rgba(124,111,255,0.06)"
-                        : "rgba(124,111,255,0.02)",
+                      border: dragOver ? "2px solid #7C6FFF" : "2px dashed rgba(124,111,255,0.35)",
+                      background: dragOver ? "rgba(124,111,255,0.06)" : "rgba(124,111,255,0.02)",
                       boxShadow: dragOver ? "0 0 24px rgba(124,111,255,0.18)" : "none",
                     }}
                   >
                     <div
                       className="flex h-14 w-14 items-center justify-center rounded-xl"
-                      style={{ background: "rgba(124,111,255,0.12)", border: "1px solid rgba(124,111,255,0.2)" }}
+                      style={{
+                        background: "rgba(124,111,255,0.12)",
+                        border: "1px solid rgba(124,111,255,0.2)",
+                      }}
                     >
                       <Upload className="h-7 w-7" style={{ color: "#A78BFF" }} strokeWidth={1.5} />
                     </div>
@@ -555,7 +580,10 @@ export function ContractReviewPage() {
                       </p>
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
                       className="px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200"
                       style={{
                         border: "1px solid #1E1E2E",
@@ -563,9 +591,11 @@ export function ContractReviewPage() {
                         background: "transparent",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.5)";
+                        (e.currentTarget as HTMLButtonElement).style.borderColor =
+                          "rgba(124,111,255,0.5)";
                         (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 12px rgba(124,111,255,0.15)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                          "0 0 12px rgba(124,111,255,0.15)";
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
@@ -581,7 +611,10 @@ export function ContractReviewPage() {
                     type="file"
                     accept=".pdf,.docx"
                     className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleFile(f);
+                    }}
                   />
 
                   {/* Uploaded file pill */}
@@ -590,7 +623,11 @@ export function ContractReviewPage() {
                       className="flex items-center gap-3 px-4 py-3 rounded-lg"
                       style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
                     >
-                      <FileCheck className="h-5 w-5 shrink-0" style={{ color: "#A78BFF" }} strokeWidth={1.8} />
+                      <FileCheck
+                        className="h-5 w-5 shrink-0"
+                        style={{ color: "#A78BFF" }}
+                        strokeWidth={1.8}
+                      />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-white truncate">{file.name}</p>
                         <p className="text-xs" style={{ color: "#7A7A8C" }}>
@@ -598,11 +635,19 @@ export function ContractReviewPage() {
                         </p>
                       </div>
                       <button
-                        onClick={() => { setFile(null); setPageState("idle"); setAnalysis(null); }}
+                        onClick={() => {
+                          setFile(null);
+                          setPageState("idle");
+                          setAnalysis(null);
+                        }}
                         className="p-1 rounded transition-colors"
                         style={{ color: "#7A7A8C" }}
-                        onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#EF4444"}
-                        onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"}
+                        onMouseEnter={(e) =>
+                          ((e.currentTarget as HTMLButtonElement).style.color = "#EF4444")
+                        }
+                        onMouseLeave={(e) =>
+                          ((e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C")
+                        }
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -615,9 +660,10 @@ export function ContractReviewPage() {
                     disabled={!file || uploading}
                     className="w-full py-3.5 rounded-lg text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200"
                     style={{
-                      background: file && !uploading
-                        ? "linear-gradient(135deg, #7C6FFF, #A78BFF)"
-                        : "rgba(124,111,255,0.3)",
+                      background:
+                        file && !uploading
+                          ? "linear-gradient(135deg, #7C6FFF, #A78BFF)"
+                          : "rgba(124,111,255,0.3)",
                       opacity: file && !uploading ? 1 : 0.6,
                       boxShadow: file && !uploading ? "0 4px 20px rgba(124,111,255,0.3)" : "none",
                       cursor: file && !uploading ? "pointer" : "not-allowed",
@@ -639,7 +685,9 @@ export function ContractReviewPage() {
                   {/* Powered by */}
                   <div className="flex items-center justify-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5" style={{ color: "#7A7A8C" }} />
-                    <span className="text-xs" style={{ color: "#7A7A8C" }}>Powered by Gemini 2.5 Flash</span>
+                    <span className="text-xs" style={{ color: "#7A7A8C" }}>
+                      Powered by Gemini 2.5 Flash
+                    </span>
                   </div>
                 </div>
 
@@ -681,7 +729,11 @@ export function ContractReviewPage() {
                       className="flex h-16 w-16 items-center justify-center rounded-2xl"
                       style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
                     >
-                      <FileWarning className="h-8 w-8" style={{ color: "#7A7A8C" }} strokeWidth={1.5} />
+                      <FileWarning
+                        className="h-8 w-8"
+                        style={{ color: "#7A7A8C" }}
+                        strokeWidth={1.5}
+                      />
                     </div>
                     <div>
                       <p className="text-base font-semibold text-white">No contract analyzed yet</p>
@@ -697,9 +749,11 @@ export function ContractReviewPage() {
                     className="rounded-xl overflow-hidden flex flex-col"
                     style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
                   >
-
                     {/* Risk Score */}
-                    <div className="p-7 flex flex-col items-center gap-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
+                    <div
+                      className="p-7 flex flex-col items-center gap-5"
+                      style={{ borderBottom: "1px solid #1E1E2E" }}
+                    >
                       <p style={{ ...sectionLabel, marginBottom: 0 }}>Risk Score</p>
                       <RiskGauge score={analysis.riskScore} />
                       {/* Stats row */}
@@ -715,7 +769,9 @@ export function ContractReviewPage() {
                             style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
                           >
                             <span className="text-lg font-bold text-white">{value}</span>
-                            <span className="text-[11px]" style={{ color: "#7A7A8C" }}>{label}</span>
+                            <span className="text-[11px]" style={{ color: "#7A7A8C" }}>
+                              {label}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -739,9 +795,7 @@ export function ContractReviewPage() {
 
                     {/* Red Flags */}
                     <div className="p-7" style={{ borderBottom: "1px solid #1E1E2E" }}>
-                      <p style={{ ...sectionLabel, color: "#EF4444" }}>
-                        ⚠ Red Flags
-                      </p>
+                      <p style={{ ...sectionLabel, color: "#EF4444" }}>⚠ Red Flags</p>
                       <div
                         className="rounded-xl overflow-hidden flex flex-col"
                         style={{
@@ -764,7 +818,10 @@ export function ContractReviewPage() {
                               <p className="text-sm font-semibold" style={{ color: "#EF4444" }}>
                                 {flag.title}
                               </p>
-                              <p className="text-xs mt-0.5 leading-relaxed" style={{ color: "#c8c4d7" }}>
+                              <p
+                                className="text-xs mt-0.5 leading-relaxed"
+                                style={{ color: "#c8c4d7" }}
+                              >
                                 {flag.detail}
                               </p>
                             </div>
@@ -787,9 +844,11 @@ export function ContractReviewPage() {
                           color: "#7A7A8C",
                         }}
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.5)";
+                          (e.currentTarget as HTMLButtonElement).style.borderColor =
+                            "rgba(124,111,255,0.5)";
                           (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
-                          (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 12px rgba(124,111,255,0.12)";
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                            "0 0 12px rgba(124,111,255,0.12)";
                         }}
                         onMouseLeave={(e) => {
                           (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
@@ -800,11 +859,9 @@ export function ContractReviewPage() {
                         Generate Full Report
                       </button>
                     </div>
-
                   </div>
                 )}
               </div>
-
             </div>
           </div>
         </div>

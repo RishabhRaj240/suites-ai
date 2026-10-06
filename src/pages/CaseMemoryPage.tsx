@@ -77,10 +77,14 @@ const NAV_ITEMS = [
 ];
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  active:       { bg: "rgba(45,212,191,0.1)",  text: "#2DD4BF", border: "rgba(45,212,191,0.25)" },
-  "under review": { bg: "rgba(124,111,255,0.1)", text: "#A78BFF", border: "rgba(124,111,255,0.25)" },
-  closed:       { bg: "rgba(255,255,255,0.05)", text: "#7A7A8C", border: "#1E1E2E" },
-  complete:     { bg: "rgba(45,212,191,0.1)",  text: "#2DD4BF", border: "rgba(45,212,191,0.25)" },
+  active: { bg: "rgba(45,212,191,0.1)", text: "#2DD4BF", border: "rgba(45,212,191,0.25)" },
+  "under review": {
+    bg: "rgba(124,111,255,0.1)",
+    text: "#A78BFF",
+    border: "rgba(124,111,255,0.25)",
+  },
+  closed: { bg: "rgba(255,255,255,0.05)", text: "#7A7A8C", border: "#1E1E2E" },
+  complete: { bg: "rgba(45,212,191,0.1)", text: "#2DD4BF", border: "rgba(45,212,191,0.25)" },
 };
 
 function statusStyle(s: string) {
@@ -88,7 +92,11 @@ function statusStyle(s: string) {
 }
 
 function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function riskColor(score: number | null) {
@@ -100,13 +108,7 @@ function riskColor(score: number | null) {
 
 // ─── Detail Drawer ────────────────────────────────────────────────────────────
 
-function CaseDrawer({
-  case_: caseRow,
-  onClose,
-}: {
-  case_: CaseRow;
-  onClose: () => void;
-}) {
+function CaseDrawer({ case_: caseRow, onClose }: { case_: CaseRow; onClose: () => void }) {
   const navigate = useNavigate();
   const [contracts, setContracts] = useState<LinkedContract[]>([]);
   const [drafts, setDrafts] = useState<LinkedDraft[]>([]);
@@ -121,17 +123,20 @@ function CaseDrawer({
         if (!userData.user) return;
 
         const [{ data: c }, { data: d }, { data: r }] = await Promise.all([
-          (supabase.from as any)("contracts")
+          supabase
+            .from("contracts")
             .select("id, file_name, risk_score, created_at")
             .eq("user_id", userData.user.id)
             .order("created_at", { ascending: false })
             .limit(3),
-          (supabase.from as any)("drafts")
+          supabase
+            .from("drafts")
             .select("id, document_type, party_a, party_b, created_at")
             .eq("user_id", userData.user.id)
             .order("created_at", { ascending: false })
             .limit(3),
-          (supabase.from as any)("research_queries")
+          supabase
+            .from("research_queries")
             .select("id, query, created_at")
             .eq("user_id", userData.user.id)
             .order("created_at", { ascending: false })
@@ -152,7 +157,9 @@ function CaseDrawer({
 
   // Close on Escape
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -180,7 +187,8 @@ function CaseDrawer({
       {/* Drawer */}
       <div
         className="fixed right-0 top-0 h-full z-50 flex flex-col overflow-hidden"
-        style={{ width: "min(480px, 100vw)",
+        style={{
+          width: "min(480px, 100vw)",
           background: "#0D0D16",
           borderLeft: "1px solid #1E1E2E",
           boxShadow: "-24px 0 60px rgba(0,0,0,0.6)",
@@ -195,7 +203,10 @@ function CaseDrawer({
         `}</style>
 
         {/* Drawer header */}
-        <div className="px-6 py-5 flex items-start justify-between shrink-0" style={{ borderBottom: "1px solid #1E1E2E" }}>
+        <div
+          className="px-6 py-5 flex items-start justify-between shrink-0"
+          style={{ borderBottom: "1px solid #1E1E2E" }}
+        >
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-mono font-semibold" style={{ color: "#A78BFF" }}>
               {caseRow.case_number ?? `CASE-${caseRow.id.slice(0, 4).toUpperCase()}`}
@@ -212,8 +223,14 @@ function CaseDrawer({
             onClick={onClose}
             className="p-2 rounded-lg transition-colors mt-1"
             style={{ color: "#7A7A8C" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "white";
+              (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+            }}
           >
             <X className="h-5 w-5" />
           </button>
@@ -221,7 +238,6 @@ function CaseDrawer({
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto">
-
           {/* Case Overview */}
           <div className="px-6 py-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
             <p style={sLabel}>Case Overview</p>
@@ -232,16 +248,40 @@ function CaseDrawer({
                 { label: "Contact", value: caseRow.contact_info },
                 { label: "Last Updated", value: fmtDate(caseRow.updated_at) },
               ].map(({ label, value }) => (
-                <div key={label} className="flex flex-col gap-1 p-3 rounded-lg" style={{ background: "#12121A", border: "1px solid #1E1E2E" }}>
-                  <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "#7A7A8C" }}>{label}</span>
-                  <span className="text-sm font-medium text-white truncate" title={value}>{value}</span>
+                <div
+                  key={label}
+                  className="flex flex-col gap-1 p-3 rounded-lg"
+                  style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
+                >
+                  <span
+                    className="text-[10px] uppercase tracking-wider font-semibold"
+                    style={{ color: "#7A7A8C" }}
+                  >
+                    {label}
+                  </span>
+                  <span className="text-sm font-medium text-white truncate" title={value}>
+                    {value}
+                  </span>
                 </div>
               ))}
             </div>
             {caseRow.ai_summary && (
-              <div className="rounded-lg p-4" style={{ background: "rgba(124,111,255,0.06)", border: "1px solid rgba(124,111,255,0.15)" }}>
-                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#A78BFF" }}>AI Summary</p>
-                <p className="text-sm leading-relaxed" style={{ color: "#c8c4d7" }}>{caseRow.ai_summary}</p>
+              <div
+                className="rounded-lg p-4"
+                style={{
+                  background: "rgba(124,111,255,0.06)",
+                  border: "1px solid rgba(124,111,255,0.15)",
+                }}
+              >
+                <p
+                  className="text-xs font-semibold uppercase tracking-wider mb-2"
+                  style={{ color: "#A78BFF" }}
+                >
+                  AI Summary
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: "#c8c4d7" }}>
+                  {caseRow.ai_summary}
+                </p>
               </div>
             )}
           </div>
@@ -250,28 +290,53 @@ function CaseDrawer({
           <div className="px-6 py-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
             <div className="flex items-center justify-between mb-3">
               <p style={{ ...sLabel, marginBottom: 0 }}>Linked Contracts</p>
-              <button onClick={() => navigate({ to: "/contracts" })} className="text-xs font-medium transition-colors" style={{ color: "#A78BFF" }}>
+              <button
+                onClick={() => navigate({ to: "/contracts" })}
+                className="text-xs font-medium transition-colors"
+                style={{ color: "#A78BFF" }}
+              >
                 + Upload
               </button>
             </div>
             {loading ? (
               <div className="flex flex-col gap-2">
-                {[1, 2].map(i => <div key={i} className="h-10 rounded-lg" style={{ background: "#12121A" }} />)}
+                {[1, 2].map((i) => (
+                  <div key={i} className="h-10 rounded-lg" style={{ background: "#12121A" }} />
+                ))}
               </div>
             ) : contracts.length === 0 ? (
-              <p className="text-xs" style={{ color: "#7A7A8C" }}>No contracts linked yet.</p>
+              <p className="text-xs" style={{ color: "#7A7A8C" }}>
+                No contracts linked yet.
+              </p>
             ) : (
               <div className="flex flex-col gap-2">
                 {contracts.map((c) => (
-                  <div key={c.id} className="flex items-center gap-3 p-3 rounded-lg" style={{ background: "#12121A", border: "1px solid #1E1E2E" }}>
-                    <FileCheck className="h-4 w-4 shrink-0" style={{ color: "#A78BFF" }} strokeWidth={1.8} />
+                  <div
+                    key={c.id}
+                    className="flex items-center gap-3 p-3 rounded-lg"
+                    style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
+                  >
+                    <FileCheck
+                      className="h-4 w-4 shrink-0"
+                      style={{ color: "#A78BFF" }}
+                      strokeWidth={1.8}
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-white truncate">{c.file_name}</p>
-                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>{fmtDate(c.created_at)}</p>
+                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>
+                        {fmtDate(c.created_at)}
+                      </p>
                     </div>
                     {c.risk_score !== null && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded" style={{ color: riskColor(c.risk_score), background: `${riskColor(c.risk_score)}18` }}>
-                        {c.risk_score >= 67 ? "HIGH" : c.risk_score >= 34 ? "MED" : "LOW"} {c.risk_score}
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded"
+                        style={{
+                          color: riskColor(c.risk_score),
+                          background: `${riskColor(c.risk_score)}18`,
+                        }}
+                      >
+                        {c.risk_score >= 67 ? "HIGH" : c.risk_score >= 34 ? "MED" : "LOW"}{" "}
+                        {c.risk_score}
                       </span>
                     )}
                   </div>
@@ -284,24 +349,47 @@ function CaseDrawer({
           <div className="px-6 py-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
             <div className="flex items-center justify-between mb-3">
               <p style={{ ...sLabel, marginBottom: 0 }}>Drafted Documents</p>
-              <button onClick={() => navigate({ to: "/drafting" })} className="text-xs font-medium" style={{ color: "#A78BFF" }}>
+              <button
+                onClick={() => navigate({ to: "/drafting" })}
+                className="text-xs font-medium"
+                style={{ color: "#A78BFF" }}
+              >
                 + New Draft
               </button>
             </div>
             {loading ? (
               <div className="h-10 rounded-lg" style={{ background: "#12121A" }} />
             ) : drafts.length === 0 ? (
-              <p className="text-xs" style={{ color: "#7A7A8C" }}>No documents drafted yet.</p>
+              <p className="text-xs" style={{ color: "#7A7A8C" }}>
+                No documents drafted yet.
+              </p>
             ) : (
               <div className="flex flex-col gap-2">
                 {drafts.map((d) => (
-                  <div key={d.id} className="flex items-center gap-3 p-3 rounded-lg" style={{ background: "#12121A", border: "1px solid #1E1E2E" }}>
-                    <PenLineIcon className="h-4 w-4 shrink-0" style={{ color: "#A78BFF" }} strokeWidth={1.8} />
+                  <div
+                    key={d.id}
+                    className="flex items-center gap-3 p-3 rounded-lg"
+                    style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
+                  >
+                    <PenLineIcon
+                      className="h-4 w-4 shrink-0"
+                      style={{ color: "#A78BFF" }}
+                      strokeWidth={1.8}
+                    />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-white truncate">{d.document_type} — {d.party_a} vs. {d.party_b}</p>
-                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>{fmtDate(d.created_at)}</p>
+                      <p className="text-xs font-medium text-white truncate">
+                        {d.document_type} — {d.party_a} vs. {d.party_b}
+                      </p>
+                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>
+                        {fmtDate(d.created_at)}
+                      </p>
                     </div>
-                    <button className="text-[11px] font-medium transition-colors" style={{ color: "#A78BFF" }}>View</button>
+                    <button
+                      className="text-[11px] font-medium transition-colors"
+                      style={{ color: "#A78BFF" }}
+                    >
+                      View
+                    </button>
                   </div>
                 ))}
               </div>
@@ -312,22 +400,38 @@ function CaseDrawer({
           <div className="px-6 py-5" style={{ borderBottom: "1px solid #1E1E2E" }}>
             <div className="flex items-center justify-between mb-3">
               <p style={{ ...sLabel, marginBottom: 0 }}>Research Notes</p>
-              <button onClick={() => navigate({ to: "/research" })} className="text-xs font-medium" style={{ color: "#A78BFF" }}>
+              <button
+                onClick={() => navigate({ to: "/research" })}
+                className="text-xs font-medium"
+                style={{ color: "#A78BFF" }}
+              >
                 + Research
               </button>
             </div>
             {loading ? (
               <div className="h-10 rounded-lg" style={{ background: "#12121A" }} />
             ) : research.length === 0 ? (
-              <p className="text-xs" style={{ color: "#7A7A8C" }}>No research queries yet.</p>
+              <p className="text-xs" style={{ color: "#7A7A8C" }}>
+                No research queries yet.
+              </p>
             ) : (
               <div className="flex flex-col gap-2">
                 {research.map((r) => (
-                  <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg" style={{ background: "#12121A", border: "1px solid #1E1E2E" }}>
-                    <BookOpen className="h-4 w-4 shrink-0" style={{ color: "#2DD4BF" }} strokeWidth={1.8} />
+                  <div
+                    key={r.id}
+                    className="flex items-center gap-3 p-3 rounded-lg"
+                    style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
+                  >
+                    <BookOpen
+                      className="h-4 w-4 shrink-0"
+                      style={{ color: "#2DD4BF" }}
+                      strokeWidth={1.8}
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-white truncate">"{r.query}"</p>
-                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>{fmtDate(r.created_at)}</p>
+                      <p className="text-[10px]" style={{ color: "#7A7A8C" }}>
+                        {fmtDate(r.created_at)}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -353,16 +457,30 @@ function CaseDrawer({
             onClick={() => navigate({ to: "/intake" })}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
             style={{ background: "transparent", border: "1px solid #1E1E2E", color: "#7A7A8C" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+              (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+            }}
           >
             Edit Case
           </button>
           <button
             className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-            style={{ background: "transparent", border: "1px solid rgba(239,68,68,0.3)", color: "#EF4444" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.08)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+            style={{
+              background: "transparent",
+              border: "1px solid rgba(239,68,68,0.3)",
+              color: "#EF4444",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+            }}
             onClick={() => toast("Case closure coming soon")}
           >
             Close Case
@@ -422,18 +540,25 @@ export function CaseMemoryPage() {
   const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   // Filter + sort
   const filtered = cases
     .filter((c) => {
       const q = search.toLowerCase();
-      const matchSearch = !q ||
+      const matchSearch =
+        !q ||
         c.client_name.toLowerCase().includes(q) ||
         c.case_type.toLowerCase().includes(q) ||
         (c.case_number ?? "").toLowerCase().includes(q);
       const matchStatus = statusFilter === "all" || c.status.toLowerCase() === statusFilter;
-      const matchType = typeFilter === "all" || c.case_type.toLowerCase().includes(typeFilter.toLowerCase());
+      const matchType =
+        typeFilter === "all" || c.case_type.toLowerCase().includes(typeFilter.toLowerCase());
       return matchSearch && matchStatus && matchType;
     })
     .sort((a, b) => {
@@ -465,7 +590,6 @@ export function CaseMemoryPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
@@ -475,12 +599,19 @@ export function CaseMemoryPage() {
       >
         <div className="p-6 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0" style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}>
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+              style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+            >
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -505,7 +636,11 @@ export function CaseMemoryPage() {
           })}
         </div>
         <div className="px-3 pb-3" style={{ borderTop: "1px solid #1E1E2E" }}>
-          <button onClick={() => navigate({ to: "/settings" })} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-left mt-3" style={{ color: "#7A7A8C", borderLeft: "3px solid transparent" }}>
+          <button
+            onClick={() => navigate({ to: "/settings" })}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-left mt-3"
+            style={{ color: "#7A7A8C", borderLeft: "3px solid transparent" }}
+          >
             <Settings className="h-4 w-4 shrink-0" strokeWidth={1.8} />
             Settings
           </button>
@@ -522,11 +657,14 @@ export function CaseMemoryPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
-
         {/* Header */}
         <header
           className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
-          style={{ background: "rgba(13,13,22,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid #1E1E2E" }}
+          style={{
+            background: "rgba(13,13,22,0.85)",
+            backdropFilter: "blur(20px)",
+            borderBottom: "1px solid #1E1E2E",
+          }}
         >
           <div className="flex items-center gap-2 text-sm" style={{ color: "#7A7A8C" }}>
             <button
@@ -536,7 +674,12 @@ export function CaseMemoryPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate({ to: "/" })} className="hover:text-white transition-colors">Dashboard</button>
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="hover:text-white transition-colors"
+            >
+              Dashboard
+            </button>
             <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-white font-medium">Case Memory</span>
           </div>
@@ -548,17 +691,35 @@ export function CaseMemoryPage() {
               <Bell className="h-5 w-5" />
             </button>
             <div className="relative group">
-              <button className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}>
+              <button
+                className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+              >
                 {initials}
               </button>
-              <div className="absolute right-0 top-full mt-2 w-44 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50" style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}>
+              <div
+                className="absolute right-0 top-full mt-2 w-44 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50"
+                style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
+              >
                 <div className="p-3 border-b" style={{ borderColor: "#1E1E2E" }}>
                   <p className="text-xs font-medium text-white truncate">{displayName}</p>
-                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>{profile?.email}</p>
+                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>
+                    {profile?.email}
+                  </p>
                 </div>
-                <button onClick={signOut} className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl" style={{ color: "#7A7A8C" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}>
+                <button
+                  onClick={signOut}
+                  className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl"
+                  style={{ color: "#7A7A8C" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "white";
+                    (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
+                >
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
                 </button>
@@ -570,12 +731,21 @@ export function CaseMemoryPage() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto flex flex-col gap-5">
-
             {/* Page header */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium mb-4" style={{ background: "rgba(167,139,255,0.1)", color: "#A78BFF", border: "1px solid rgba(167,139,255,0.2)" }}>
-                  <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium mb-4"
+                  style={{
+                    background: "rgba(167,139,255,0.1)",
+                    color: "#A78BFF",
+                    border: "1px solid rgba(167,139,255,0.2)",
+                  }}
+                >
+                  <span
+                    className="h-1.5 w-1.5 rounded-full animate-pulse"
+                    style={{ background: "#A78BFF" }}
+                  />
                   Case Memory Active
                 </span>
                 <h1 className="text-xl md:text-3xl font-bold text-white">Case Memory</h1>
@@ -586,7 +756,10 @@ export function CaseMemoryPage() {
               <button
                 onClick={() => navigate({ to: "/intake" })}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200"
-                style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)", boxShadow: "0 4px 16px rgba(124,111,255,0.3)" }}
+                style={{
+                  background: "linear-gradient(135deg, #7C6FFF, #A78BFF)",
+                  boxShadow: "0 4px 16px rgba(124,111,255,0.3)",
+                }}
               >
                 <Plus className="h-4 w-4" />
                 New Intake
@@ -612,7 +785,12 @@ export function CaseMemoryPage() {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="text-xs px-3 py-2 rounded-lg appearance-none cursor-pointer"
-                style={{ background: "#12121A", border: "1px solid #1E1E2E", color: "#c8c4d7", outline: "none" }}
+                style={{
+                  background: "#12121A",
+                  border: "1px solid #1E1E2E",
+                  color: "#c8c4d7",
+                  outline: "none",
+                }}
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
@@ -625,24 +803,42 @@ export function CaseMemoryPage() {
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="text-xs px-3 py-2 rounded-lg appearance-none cursor-pointer"
-                style={{ background: "#12121A", border: "1px solid #1E1E2E", color: "#c8c4d7", outline: "none" }}
+                style={{
+                  background: "#12121A",
+                  border: "1px solid #1E1E2E",
+                  color: "#c8c4d7",
+                  outline: "none",
+                }}
               >
                 <option value="all">All Types</option>
-                {uniqueTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                {uniqueTypes.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
               </select>
               {/* Sort */}
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
                 className="text-xs px-3 py-2 rounded-lg appearance-none cursor-pointer"
-                style={{ background: "#12121A", border: "1px solid #1E1E2E", color: "#c8c4d7", outline: "none" }}
+                style={{
+                  background: "#12121A",
+                  border: "1px solid #1E1E2E",
+                  color: "#c8c4d7",
+                  outline: "none",
+                }}
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
               </select>
               <button
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
-                style={{ background: "rgba(124,111,255,0.1)", color: "#A78BFF", border: "1px solid rgba(124,111,255,0.25)" }}
+                style={{
+                  background: "rgba(124,111,255,0.1)",
+                  color: "#A78BFF",
+                  border: "1px solid rgba(124,111,255,0.25)",
+                }}
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 Filter
@@ -650,141 +846,189 @@ export function CaseMemoryPage() {
             </div>
 
             {/* Table */}
-            <div className="rounded-xl overflow-x-auto" style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}>
+            <div
+              className="rounded-xl overflow-x-auto"
+              style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
+            >
               <div style={{ minWidth: 720 }}>
-
-              {/* Table header */}
-              <div
-                className="flex items-center"
-                style={{ background: "#12121A", borderBottom: "1px solid #1E1E2E", height: 44 }}
-              >
-                <div style={{ ...colStyle(140), ...thStyle }}>Case ID</div>
-                <div style={{ ...colStyle(), flex: 1, ...thStyle }}>Client Name</div>
-                <div style={{ ...colStyle(180), ...thStyle }}>Type</div>
-                <div style={{ ...colStyle(140), ...thStyle }}>Status</div>
-                <div style={{ ...colStyle(150), ...thStyle }}>Date Created</div>
-                <div style={{ ...colStyle(100), ...thStyle }}>Actions</div>
-              </div>
-
-              {/* Loading state */}
-              {loading && (
-                <div className="flex flex-col">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex items-center" style={{ height: 60, borderBottom: "1px solid #1E1E2E" }}>
-                      {[140, 0, 180, 140, 150, 100].map((w, j) => (
-                        <div key={j} style={{ ...colStyle(w || undefined), flex: w === 0 ? 1 : undefined }}>
-                          <div className="h-4 rounded" style={{ background: "#1E1E2E", width: `${60 + (i * j * 7) % 30}%`, opacity: 0.6 }} />
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+                {/* Table header */}
+                <div
+                  className="flex items-center"
+                  style={{ background: "#12121A", borderBottom: "1px solid #1E1E2E", height: 44 }}
+                >
+                  <div style={{ ...colStyle(140), ...thStyle }}>Case ID</div>
+                  <div style={{ ...colStyle(), flex: 1, ...thStyle }}>Client Name</div>
+                  <div style={{ ...colStyle(180), ...thStyle }}>Type</div>
+                  <div style={{ ...colStyle(140), ...thStyle }}>Status</div>
+                  <div style={{ ...colStyle(150), ...thStyle }}>Date Created</div>
+                  <div style={{ ...colStyle(100), ...thStyle }}>Actions</div>
                 </div>
-              )}
 
-              {/* Empty state */}
-              {!loading && filtered.length === 0 && (
-                <div className="flex flex-col items-center justify-center gap-4 py-16">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "#12121A", border: "1px solid #1E1E2E" }}>
-                    <AlertCircle className="h-7 w-7" style={{ color: "#7A7A8C" }} strokeWidth={1.5} />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-base font-semibold text-white">
-                      {cases.length === 0 ? "No cases yet" : "No matching cases"}
-                    </p>
-                    <p className="text-sm mt-1" style={{ color: "#7A7A8C" }}>
-                      {cases.length === 0 ? "Create your first case via the Intake Agent." : "Try adjusting your search or filters."}
-                    </p>
-                  </div>
-                  {cases.length === 0 && (
-                    <button
-                      onClick={() => navigate({ to: "/intake" })}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white"
-                      style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
-                    >
-                      <Plus className="h-4 w-4" />
-                      New Intake
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* Rows */}
-              {!loading && filtered.map((c) => {
-                const ss = statusStyle(c.status);
-                const isSelected = selectedCase?.id === c.id;
-                const isHovered = hoveredRow === c.id;
-                return (
-                  <div
-                    key={c.id}
-                    className="flex items-center cursor-pointer transition-all duration-150"
-                    style={{
-                      height: 60,
-                      borderBottom: "1px solid #1E1E2E",
-                      background: isSelected
-                        ? "rgba(124,111,255,0.08)"
-                        : isHovered
-                        ? "rgba(124,111,255,0.04)"
-                        : "transparent",
-                      borderLeft: isSelected ? "3px solid #7C6FFF" : "3px solid transparent",
-                    }}
-                    onMouseEnter={() => setHoveredRow(c.id)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                    onClick={() => setSelectedCase(isSelected ? null : c)}
-                  >
-                    {/* Case ID */}
-                    <div style={colStyle(140)}>
-                      <span className="text-xs font-mono font-semibold" style={{ color: "#A78BFF" }}>
-                        {c.case_number ?? `CASE-${c.id.slice(0, 4).toUpperCase()}`}
-                      </span>
-                    </div>
-                    {/* Client Name */}
-                    <div style={{ ...colStyle(), flex: 1 }}>
-                      <span className="text-sm font-semibold text-white">{c.client_name}</span>
-                    </div>
-                    {/* Type */}
-                    <div style={colStyle(180)}>
-                      <span className="text-sm" style={{ color: "#7A7A8C" }}>{c.case_type}</span>
-                    </div>
-                    {/* Status */}
-                    <div style={colStyle(140)}>
-                      <span
-                        className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                        style={{ background: ss.bg, color: ss.text, border: `1px solid ${ss.border}` }}
+                {/* Loading state */}
+                {loading && (
+                  <div className="flex flex-col">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="flex items-center"
+                        style={{ height: 60, borderBottom: "1px solid #1E1E2E" }}
                       >
-                        {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
-                      </span>
-                    </div>
-                    {/* Date */}
-                    <div style={colStyle(150)}>
-                      <span className="text-xs" style={{ color: "#7A7A8C" }}>{fmtDate(c.created_at)}</span>
-                    </div>
-                    {/* Actions */}
-                    <div style={colStyle(100)} onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setSelectedCase(isSelected ? null : c)}
-                          className="p-2 rounded-lg transition-all duration-150"
-                          style={{ color: isSelected ? "#A78BFF" : "#7A7A8C" }}
-                          onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"}
-                          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = isSelected ? "#A78BFF" : "#7A7A8C"}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button
-                          className="p-2 rounded-lg transition-all duration-150"
-                          style={{ color: "#7A7A8C" }}
-                          onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"}
-                          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"}
-                          onClick={() => toast(`More options for ${c.client_name} coming soon`)}
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
+                        {[140, 0, 180, 140, 150, 100].map((w, j) => (
+                          <div
+                            key={j}
+                            style={{ ...colStyle(w || undefined), flex: w === 0 ? 1 : undefined }}
+                          >
+                            <div
+                              className="h-4 rounded"
+                              style={{
+                                background: "#1E1E2E",
+                                width: `${60 + ((i * j * 7) % 30)}%`,
+                                opacity: 0.6,
+                              }}
+                            />
+                          </div>
+                        ))}
                       </div>
-                    </div>
+                    ))}
                   </div>
-                );
-              })}
-              </div>{/* end minWidth */}
+                )}
+
+                {/* Empty state */}
+                {!loading && filtered.length === 0 && (
+                  <div className="flex flex-col items-center justify-center gap-4 py-16">
+                    <div
+                      className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                      style={{ background: "#12121A", border: "1px solid #1E1E2E" }}
+                    >
+                      <AlertCircle
+                        className="h-7 w-7"
+                        style={{ color: "#7A7A8C" }}
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-base font-semibold text-white">
+                        {cases.length === 0 ? "No cases yet" : "No matching cases"}
+                      </p>
+                      <p className="text-sm mt-1" style={{ color: "#7A7A8C" }}>
+                        {cases.length === 0
+                          ? "Create your first case via the Intake Agent."
+                          : "Try adjusting your search or filters."}
+                      </p>
+                    </div>
+                    {cases.length === 0 && (
+                      <button
+                        onClick={() => navigate({ to: "/intake" })}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white"
+                        style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        New Intake
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Rows */}
+                {!loading &&
+                  filtered.map((c) => {
+                    const ss = statusStyle(c.status);
+                    const isSelected = selectedCase?.id === c.id;
+                    const isHovered = hoveredRow === c.id;
+                    return (
+                      <div
+                        key={c.id}
+                        className="flex items-center cursor-pointer transition-all duration-150"
+                        style={{
+                          height: 60,
+                          borderBottom: "1px solid #1E1E2E",
+                          background: isSelected
+                            ? "rgba(124,111,255,0.08)"
+                            : isHovered
+                              ? "rgba(124,111,255,0.04)"
+                              : "transparent",
+                          borderLeft: isSelected ? "3px solid #7C6FFF" : "3px solid transparent",
+                        }}
+                        onMouseEnter={() => setHoveredRow(c.id)}
+                        onMouseLeave={() => setHoveredRow(null)}
+                        onClick={() => setSelectedCase(isSelected ? null : c)}
+                      >
+                        {/* Case ID */}
+                        <div style={colStyle(140)}>
+                          <span
+                            className="text-xs font-mono font-semibold"
+                            style={{ color: "#A78BFF" }}
+                          >
+                            {c.case_number ?? `CASE-${c.id.slice(0, 4).toUpperCase()}`}
+                          </span>
+                        </div>
+                        {/* Client Name */}
+                        <div style={{ ...colStyle(), flex: 1 }}>
+                          <span className="text-sm font-semibold text-white">{c.client_name}</span>
+                        </div>
+                        {/* Type */}
+                        <div style={colStyle(180)}>
+                          <span className="text-sm" style={{ color: "#7A7A8C" }}>
+                            {c.case_type}
+                          </span>
+                        </div>
+                        {/* Status */}
+                        <div style={colStyle(140)}>
+                          <span
+                            className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            style={{
+                              background: ss.bg,
+                              color: ss.text,
+                              border: `1px solid ${ss.border}`,
+                            }}
+                          >
+                            {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
+                          </span>
+                        </div>
+                        {/* Date */}
+                        <div style={colStyle(150)}>
+                          <span className="text-xs" style={{ color: "#7A7A8C" }}>
+                            {fmtDate(c.created_at)}
+                          </span>
+                        </div>
+                        {/* Actions */}
+                        <div style={colStyle(100)} onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setSelectedCase(isSelected ? null : c)}
+                              className="p-2 rounded-lg transition-all duration-150"
+                              style={{ color: isSelected ? "#A78BFF" : "#7A7A8C" }}
+                              onMouseEnter={(e) =>
+                                ((e.currentTarget as HTMLButtonElement).style.color = "#A78BFF")
+                              }
+                              onMouseLeave={(e) =>
+                                ((e.currentTarget as HTMLButtonElement).style.color = isSelected
+                                  ? "#A78BFF"
+                                  : "#7A7A8C")
+                              }
+                            >
+                              <Eye className="h-4 w-4" />
+                            </button>
+                            <button
+                              className="p-2 rounded-lg transition-all duration-150"
+                              style={{ color: "#7A7A8C" }}
+                              onMouseEnter={(e) =>
+                                ((e.currentTarget as HTMLButtonElement).style.color = "#A78BFF")
+                              }
+                              onMouseLeave={(e) =>
+                                ((e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C")
+                              }
+                              onClick={() => toast(`More options for ${c.client_name} coming soon`)}
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+              {/* end minWidth */}
             </div>
 
             {/* Footer count */}
@@ -793,18 +1037,12 @@ export function CaseMemoryPage() {
                 Showing {filtered.length} of {cases.length} cases
               </p>
             )}
-
           </div>
         </div>
       </main>
 
       {/* Detail Drawer */}
-      {selectedCase && (
-        <CaseDrawer
-          case_={selectedCase}
-          onClose={() => setSelectedCase(null)}
-        />
-      )}
+      {selectedCase && <CaseDrawer case_={selectedCase} onClose={() => setSelectedCase(null)} />}
     </div>
   );
 }

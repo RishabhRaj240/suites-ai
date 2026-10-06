@@ -195,7 +195,7 @@ export const generateDraft = createServerFn({ method: "POST" })
               maxOutputTokens: 2048,
             },
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -204,7 +204,7 @@ export const generateDraft = createServerFn({ method: "POST" })
         return { content: fallback, wordCount: fallback.split(/\s+/).length };
       }
 
-      const result = await response.json() as {
+      const result = (await response.json()) as {
         candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
       };
 

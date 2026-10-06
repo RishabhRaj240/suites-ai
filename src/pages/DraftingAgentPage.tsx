@@ -79,7 +79,9 @@ function TypewriterText({ text, active }: { text: string; active: boolean }) {
       }
     }
     rafRef.current = setTimeout(tick, speed);
-    return () => { if (rafRef.current) clearTimeout(rafRef.current); };
+    return () => {
+      if (rafRef.current) clearTimeout(rafRef.current);
+    };
   }, [text, active]);
 
   return (
@@ -134,10 +136,20 @@ export function DraftingAgentPage() {
   const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const initials = displayName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   async function handleGenerate() {
-    if (!form.partyA.trim() || !form.partyB.trim() || !form.jurisdiction.trim() || !form.keyFacts.trim()) {
+    if (
+      !form.partyA.trim() ||
+      !form.partyB.trim() ||
+      !form.jurisdiction.trim() ||
+      !form.keyFacts.trim()
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -171,7 +183,7 @@ export function DraftingAgentPage() {
       try {
         const { data: userData } = await supabase.auth.getUser();
         if (userData.user) {
-          await (supabase.from as any)("drafts").insert({
+          await supabase.from("drafts").insert({
             user_id: userData.user.id,
             document_type: form.documentType,
             party_a: form.partyA,
@@ -189,11 +201,14 @@ export function DraftingAgentPage() {
 
       setDraft(result);
       setTypewriterActive(true);
-      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+      setTimeout(
+        () => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        100,
+      );
       toast.success("Document drafted successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message || "Generation failed");
+      toast.error(err instanceof Error ? err.message : "Generation failed");
     } finally {
       setGenerating(false);
     }
@@ -224,7 +239,13 @@ export function DraftingAgentPage() {
   function handleNewDraft() {
     setDraft(null);
     setTypewriterActive(false);
-    setForm({ documentType: "Legal Notice", partyA: "", partyB: "", jurisdiction: "", keyFacts: "" });
+    setForm({
+      documentType: "Legal Notice",
+      partyA: "",
+      partyB: "",
+      jurisdiction: "",
+      keyFacts: "",
+    });
   }
 
   async function signOut() {
@@ -252,7 +273,6 @@ export function DraftingAgentPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
@@ -269,8 +289,12 @@ export function DraftingAgentPage() {
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -316,7 +340,6 @@ export function DraftingAgentPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden">
-
         {/* Header */}
         <header
           className="h-16 flex items-center justify-between px-4 md:px-8 shrink-0"
@@ -334,7 +357,12 @@ export function DraftingAgentPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate({ to: "/" })} className="hover:text-white transition-colors">Dashboard</button>
+            <button
+              onClick={() => navigate({ to: "/" })}
+              className="hover:text-white transition-colors"
+            >
+              Dashboard
+            </button>
             <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-white font-medium">Drafting Agent</span>
           </div>
@@ -358,14 +386,22 @@ export function DraftingAgentPage() {
               >
                 <div className="p-3 border-b" style={{ borderColor: "#1E1E2E" }}>
                   <p className="text-xs font-medium text-white truncate">{displayName}</p>
-                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>{profile?.email}</p>
+                  <p className="text-[11px] truncate" style={{ color: "#7A7A8C" }}>
+                    {profile?.email}
+                  </p>
                 </div>
                 <button
                   onClick={signOut}
                   className="flex w-full items-center gap-2 px-3 py-2.5 text-xs rounded-b-xl"
                   style={{ color: "#7A7A8C" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "white"; (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "white";
+                    (e.currentTarget as HTMLButtonElement).style.background = "#1E1E2E";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
@@ -378,17 +414,25 @@ export function DraftingAgentPage() {
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
-
             {/* Page title */}
             <section>
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium mb-5"
-                style={{ background: "rgba(167,139,255,0.1)", color: "#A78BFF", border: "1px solid rgba(167,139,255,0.2)" }}
+                style={{
+                  background: "rgba(167,139,255,0.1)",
+                  color: "#A78BFF",
+                  border: "1px solid rgba(167,139,255,0.2)",
+                }}
               >
-                <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#A78BFF" }} />
+                <span
+                  className="h-1.5 w-1.5 rounded-full animate-pulse"
+                  style={{ background: "#A78BFF" }}
+                />
                 Drafting Agent Active
               </span>
-              <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">Legal Document Drafting</h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">
+                Legal Document Drafting
+              </h1>
               <p className="mt-2 text-base" style={{ color: "#7A7A8C" }}>
                 Configure your document — AI drafts it instantly in legal-grade language
               </p>
@@ -396,7 +440,6 @@ export function DraftingAgentPage() {
 
             {/* Two-panel layout */}
             <div className="grid grid-cols-1 lg:grid-cols-[42fr_58fr] gap-6 lg:gap-8">
-
               {/* ── LEFT: Form ── */}
               <div
                 className="rounded-xl p-5 sm:p-7 flex flex-col gap-6 lg:self-start lg:sticky lg:top-0"
@@ -407,7 +450,11 @@ export function DraftingAgentPage() {
                   <h2 className="text-base font-semibold text-white">Document Configuration</h2>
                   <span
                     className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background: "rgba(124,111,255,0.12)", color: "#A78BFF", border: "1px solid rgba(124,111,255,0.25)" }}
+                    style={{
+                      background: "rgba(124,111,255,0.12)",
+                      color: "#A78BFF",
+                      border: "1px solid rgba(124,111,255,0.25)",
+                    }}
                   >
                     AI-Powered
                   </span>
@@ -426,7 +473,9 @@ export function DraftingAgentPage() {
                       style={inputStyle("docType")}
                     >
                       {DOC_TYPES.map((t) => (
-                        <option key={t} value={t} style={{ background: "#12121A" }}>{t}</option>
+                        <option key={t} value={t} style={{ background: "#12121A" }}>
+                          {t}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -520,7 +569,9 @@ export function DraftingAgentPage() {
                   {/* Powered by */}
                   <div className="flex items-center justify-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5" style={{ color: "#7A7A8C" }} />
-                    <span className="text-xs" style={{ color: "#7A7A8C" }}>Powered by Gemini 2.5 Flash</span>
+                    <span className="text-xs" style={{ color: "#7A7A8C" }}>
+                      Powered by Gemini 2.5 Flash
+                    </span>
                   </div>
                 </div>
               </div>
@@ -531,10 +582,10 @@ export function DraftingAgentPage() {
                   <div
                     className="rounded-xl flex flex-col items-center justify-center gap-4 text-center"
                     style={{
-                        background: "#0D0D16",
-                        border: "1px dashed #1E1E2E",
-                        minHeight: 320,
-                      }}
+                      background: "#0D0D16",
+                      border: "1px dashed #1E1E2E",
+                      minHeight: 320,
+                    }}
                   >
                     <div
                       className="flex h-16 w-16 items-center justify-center rounded-2xl"
@@ -545,7 +596,8 @@ export function DraftingAgentPage() {
                     <div>
                       <p className="text-base font-semibold text-white">Ready to draft</p>
                       <p className="text-sm mt-1 max-w-xs" style={{ color: "#7A7A8C" }}>
-                        Fill in the form and click "Generate Document" to draft your legal document with AI.
+                        Fill in the form and click "Generate Document" to draft your legal document
+                        with AI.
                       </p>
                     </div>
                     {/* Preview skeleton */}
@@ -596,8 +648,12 @@ export function DraftingAgentPage() {
                       }}
                     />
                     <div className="text-center">
-                      <p className="text-sm font-semibold text-white">AI is drafting your document...</p>
-                      <p className="text-xs mt-1" style={{ color: "#7A7A8C" }}>Applying legal language · Structuring clauses</p>
+                      <p className="text-sm font-semibold text-white">
+                        AI is drafting your document...
+                      </p>
+                      <p className="text-xs mt-1" style={{ color: "#7A7A8C" }}>
+                        Applying legal language · Structuring clauses
+                      </p>
                     </div>
                     <div className="w-72 flex flex-col gap-3 mt-2">
                       {[95, 80, 88, 65, 75, 90, 70].map((w, i) => (
@@ -622,11 +678,15 @@ export function DraftingAgentPage() {
                       style={{ borderBottom: "1px solid #1E1E2E" }}
                     >
                       <div>
-                        <p className="text-[11px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                        <p
+                          className="text-[11px] uppercase tracking-widest"
+                          style={{ color: "#7A7A8C" }}
+                        >
                           Document Preview
                         </p>
                         <p className="text-sm font-semibold text-white mt-0.5">
-                          {form.documentType} — {form.partyA || "Party A"} vs. {form.partyB || "Party B"}
+                          {form.documentType} — {form.partyA || "Party A"} vs.{" "}
+                          {form.partyB || "Party B"}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
@@ -639,8 +699,14 @@ export function DraftingAgentPage() {
                             color: "#A78BFF",
                             border: "1px solid rgba(124,111,255,0.25)",
                           }}
-                          onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.18)"}
-                          onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.background = "rgba(124,111,255,0.1)"}
+                          onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLButtonElement).style.background =
+                              "rgba(124,111,255,0.18)")
+                          }
+                          onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLButtonElement).style.background =
+                              "rgba(124,111,255,0.1)")
+                          }
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
                           New Draft
@@ -649,20 +715,50 @@ export function DraftingAgentPage() {
                         <button
                           onClick={handleCopy}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200"
-                          style={{ background: "transparent", color: copied ? "#2DD4BF" : "#7A7A8C", border: "1px solid #1E1E2E" }}
-                          onMouseEnter={(e) => { if (!copied) { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; } }}
-                          onMouseLeave={(e) => { if (!copied) { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; } }}
+                          style={{
+                            background: "transparent",
+                            color: copied ? "#2DD4BF" : "#7A7A8C",
+                            border: "1px solid #1E1E2E",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!copied) {
+                              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                                "rgba(124,111,255,0.4)";
+                              (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!copied) {
+                              (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+                              (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                            }
+                          }}
                         >
-                          {copied ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copied ? (
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copied ? "Copied!" : "Copy"}
                         </button>
                         {/* Download */}
                         <button
                           onClick={handleDownloadPDF}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200"
-                          style={{ background: "transparent", color: "#7A7A8C", border: "1px solid #1E1E2E" }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(124,111,255,0.4)"; (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF"; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E"; (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C"; }}
+                          style={{
+                            background: "transparent",
+                            color: "#7A7A8C",
+                            border: "1px solid #1E1E2E",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.borderColor =
+                              "rgba(124,111,255,0.4)";
+                            (e.currentTarget as HTMLButtonElement).style.color = "#A78BFF";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.borderColor = "#1E1E2E";
+                            (e.currentTarget as HTMLButtonElement).style.color = "#7A7A8C";
+                          }}
                         >
                           <Download className="h-3.5 w-3.5" />
                           Download
@@ -688,13 +784,13 @@ export function DraftingAgentPage() {
                     >
                       <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: "#2DD4BF" }} />
                       <p className="text-xs" style={{ color: "#2DD4BF" }}>
-                        Document generated · {draft.wordCount} words · {form.documentType} · Reviewed by AI
+                        Document generated · {draft.wordCount} words · {form.documentType} ·
+                        Reviewed by AI
                       </p>
                     </div>
                   </div>
                 )}
               </div>
-
             </div>
           </div>
         </div>

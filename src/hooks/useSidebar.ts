@@ -9,7 +9,7 @@ import { useState, useCallback } from "react";
 export function useSidebar(defaultOpen = false) {
   const [sidebarOpen, setSidebarOpen] = useState(defaultOpen);
 
-  const openSidebar  = useCallback(() => setSidebarOpen(true),  []);
+  const openSidebar = useCallback(() => setSidebarOpen(true), []);
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   const toggleSidebar = useCallback(() => setSidebarOpen((v) => !v), []);
 

@@ -48,7 +48,7 @@ export const generateCaseSummary = createServerFn({ method: "POST" })
               maxOutputTokens: 512,
             },
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -56,15 +56,14 @@ export const generateCaseSummary = createServerFn({ method: "POST" })
         return { summary: generateFallbackSummary(data) };
       }
 
-      const result = await response.json() as {
+      const result = (await response.json()) as {
         candidates?: Array<{
           content?: { parts?: Array<{ text?: string }> };
         }>;
       };
 
       const summary =
-        result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ??
-        generateFallbackSummary(data);
+        result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? generateFallbackSummary(data);
 
       return { summary };
     } catch (err) {

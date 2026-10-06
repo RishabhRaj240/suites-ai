@@ -56,7 +56,6 @@ const NAV_PATHS: Record<string, string> = {
   memory: "/memory",
 };
 
-
 const METRIC_CARDS = [
   { label: "Active Cases", value: "12", trend: "+2 this week", icon: Briefcase },
   { label: "Contracts Reviewed", value: "47", trend: "+8 this month", icon: FileText },
@@ -65,10 +64,34 @@ const METRIC_CARDS = [
 ];
 
 const ACTIVITY_LOG = [
-  { time: "2 min ago", action: "Contract analyzed: MSA_TechCorp.pdf", agent: "Contract Reviewer", status: "Completed", done: true },
-  { time: "14 min ago", action: "New intake started: Smith v. Jones", agent: "Intake Agent", status: "In Progress", done: false },
-  { time: "1 hr ago", action: "Notice drafted: Demand Letter #7", agent: "Drafting Agent", status: "Completed", done: true },
-  { time: "3 hrs ago", action: "Research query: negligence case law", agent: "Research Agent", status: "Completed", done: true },
+  {
+    time: "2 min ago",
+    action: "Contract analyzed: MSA_TechCorp.pdf",
+    agent: "Contract Reviewer",
+    status: "Completed",
+    done: true,
+  },
+  {
+    time: "14 min ago",
+    action: "New intake started: Smith v. Jones",
+    agent: "Intake Agent",
+    status: "In Progress",
+    done: false,
+  },
+  {
+    time: "1 hr ago",
+    action: "Notice drafted: Demand Letter #7",
+    agent: "Drafting Agent",
+    status: "Completed",
+    done: true,
+  },
+  {
+    time: "3 hrs ago",
+    action: "Research query: negligence case law",
+    agent: "Research Agent",
+    status: "Completed",
+    done: true,
+  },
 ];
 
 const QUICK_ACTIONS = [
@@ -111,12 +134,10 @@ export function DashboardPage() {
     navigate({ to: "/auth", replace: true });
   }
 
-  const displayName =
-    profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
+  const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
 
   const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   const initials = displayName
     .split(" ")
@@ -127,11 +148,8 @@ export function DashboardPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0A0A0F] font-sans antialiased">
-
       {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />
-      )}
+      {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={closeSidebar} />}
 
       {/* ── Sidebar ── */}
       <nav
@@ -150,8 +168,12 @@ export function DashboardPage() {
               <img src="/logo.png" alt="Suites AI" className="h-5 w-5 object-contain" />
             </div>
             <div>
-              <span className="text-sm font-bold tracking-tight text-white block leading-tight">Suites AI</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>Legal Intelligence</span>
+              <span className="text-sm font-bold tracking-tight text-white block leading-tight">
+                Suites AI
+              </span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "#7A7A8C" }}>
+                Legal Intelligence
+              </span>
             </div>
           </div>
         </div>
@@ -194,8 +216,10 @@ export function DashboardPage() {
           </button>
 
           {/* New Case CTA */}
-          <button className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}>
+          <button
+            className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #7C6FFF, #A78BFF)" }}
+          >
             <Plus className="h-4 w-4" />
             New Case
           </button>
@@ -223,8 +247,7 @@ export function DashboardPage() {
             <Menu className="h-5 w-5" />
           </button>
           <p className="text-base font-semibold text-white">
-            {greeting},{" "}
-            <span style={{ color: "#A78BFF" }}>{displayName}</span>
+            {greeting}, <span style={{ color: "#A78BFF" }}>{displayName}</span>
           </p>
 
           <div className="flex items-center gap-3">
@@ -285,7 +308,6 @@ export function DashboardPage() {
         {/* Scrollable workspace */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-5xl mx-auto flex flex-col gap-8 lg:gap-10">
-
             {/* ── Page title ── */}
             <section>
               <div>
@@ -328,7 +350,8 @@ export function DashboardPage() {
                     className="absolute inset-0 pointer-events-none transition-opacity duration-300"
                     style={{
                       opacity: hoveredCard === i ? 1 : 0,
-                      background: "radial-gradient(circle at bottom left, rgba(124,111,255,0.07), transparent 65%)",
+                      background:
+                        "radial-gradient(circle at bottom left, rgba(124,111,255,0.07), transparent 65%)",
                     }}
                   />
 
@@ -343,7 +366,8 @@ export function DashboardPage() {
                     <div
                       className="flex h-8 w-8 items-center justify-center rounded-lg"
                       style={{
-                        background: hoveredCard === i ? "rgba(124,111,255,0.15)" : "rgba(30,30,46,0.8)",
+                        background:
+                          hoveredCard === i ? "rgba(124,111,255,0.15)" : "rgba(30,30,46,0.8)",
                         transition: "background 0.3s",
                       }}
                     >
@@ -397,87 +421,89 @@ export function DashboardPage() {
                 style={{ background: "#0D0D16", border: "1px solid #1E1E2E" }}
               >
                 <div style={{ minWidth: 560 }}>
-                {/* Table header */}
-                <div
-                  className="grid px-5 py-3 text-xs font-semibold uppercase tracking-widest"
-                  style={{
-                    color: "#7A7A8C",
-                    background: "#0A0A0F",
-                    borderBottom: "1px solid #1E1E2E",
-                    gridTemplateColumns: "90px 1fr 160px 110px",
-                  }}
-                >
-                  <div>Time</div>
-                  <div>Action</div>
-                  <div>Agent</div>
-                  <div>Status</div>
-                </div>
-
-                {/* Rows */}
-                {ACTIVITY_LOG.map(({ time, action, agent, status, done }, i, arr) => (
+                  {/* Table header */}
                   <div
-                    key={i}
-                    className="grid items-center px-5 py-4 transition-colors duration-150"
+                    className="grid px-5 py-3 text-xs font-semibold uppercase tracking-widest"
                     style={{
+                      color: "#7A7A8C",
+                      background: "#0A0A0F",
+                      borderBottom: "1px solid #1E1E2E",
                       gridTemplateColumns: "90px 1fr 160px 110px",
-                      borderBottom: i < arr.length - 1 ? "1px solid #1E1E2E" : undefined,
                     }}
-                    onMouseEnter={(e) =>
-                      ((e.currentTarget as HTMLDivElement).style.background = "rgba(167,139,255,0.03)")
-                    }
-                    onMouseLeave={(e) =>
-                      ((e.currentTarget as HTMLDivElement).style.background = "transparent")
-                    }
                   >
-                    {/* Time */}
-                    <div className="flex items-center gap-2">
-                      <CircleDot
-                        className="h-3 w-3 shrink-0"
-                        style={{ color: done ? "#A78BFF" : "#7C6FFF" }}
-                        strokeWidth={2}
-                      />
-                      <span className="text-xs" style={{ color: "#7A7A8C" }}>
-                        {time}
-                      </span>
-                    </div>
-
-                    {/* Action */}
-                    <span className="text-sm text-white truncate pr-4">{action}</span>
-
-                    {/* Agent badge */}
-                    <div>
-                      <span
-                        className="text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap"
-                        style={{
-                          background: "rgba(124,111,255,0.1)",
-                          color: "#A78BFF",
-                          border: "1px solid rgba(124,111,255,0.2)",
-                        }}
-                      >
-                        {agent}
-                      </span>
-                    </div>
-
-                    {/* Status chip */}
-                    <div>
-                      <span
-                        className="text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap"
-                        style={
-                          done
-                            ? { background: "rgba(167,139,255,0.08)", color: "#A78BFF" }
-                            : {
-                                background: "rgba(124,111,255,0.1)",
-                                color: "#A78BFF",
-                                boxShadow: "inset 0 0 0 1px rgba(167,139,255,0.3)",
-                              }
-                        }
-                      >
-                        {status}
-                      </span>
-                    </div>
+                    <div>Time</div>
+                    <div>Action</div>
+                    <div>Agent</div>
+                    <div>Status</div>
                   </div>
-                ))}
-              </div>{/* end min-width div */}
+
+                  {/* Rows */}
+                  {ACTIVITY_LOG.map(({ time, action, agent, status, done }, i, arr) => (
+                    <div
+                      key={i}
+                      className="grid items-center px-5 py-4 transition-colors duration-150"
+                      style={{
+                        gridTemplateColumns: "90px 1fr 160px 110px",
+                        borderBottom: i < arr.length - 1 ? "1px solid #1E1E2E" : undefined,
+                      }}
+                      onMouseEnter={(e) =>
+                        ((e.currentTarget as HTMLDivElement).style.background =
+                          "rgba(167,139,255,0.03)")
+                      }
+                      onMouseLeave={(e) =>
+                        ((e.currentTarget as HTMLDivElement).style.background = "transparent")
+                      }
+                    >
+                      {/* Time */}
+                      <div className="flex items-center gap-2">
+                        <CircleDot
+                          className="h-3 w-3 shrink-0"
+                          style={{ color: done ? "#A78BFF" : "#7C6FFF" }}
+                          strokeWidth={2}
+                        />
+                        <span className="text-xs" style={{ color: "#7A7A8C" }}>
+                          {time}
+                        </span>
+                      </div>
+
+                      {/* Action */}
+                      <span className="text-sm text-white truncate pr-4">{action}</span>
+
+                      {/* Agent badge */}
+                      <div>
+                        <span
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap"
+                          style={{
+                            background: "rgba(124,111,255,0.1)",
+                            color: "#A78BFF",
+                            border: "1px solid rgba(124,111,255,0.2)",
+                          }}
+                        >
+                          {agent}
+                        </span>
+                      </div>
+
+                      {/* Status chip */}
+                      <div>
+                        <span
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap"
+                          style={
+                            done
+                              ? { background: "rgba(167,139,255,0.08)", color: "#A78BFF" }
+                              : {
+                                  background: "rgba(124,111,255,0.1)",
+                                  color: "#A78BFF",
+                                  boxShadow: "inset 0 0 0 1px rgba(167,139,255,0.3)",
+                                }
+                          }
+                        >
+                          {status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* end min-width div */}
               </div>
             </section>
 
@@ -488,7 +514,9 @@ export function DashboardPage() {
                 {QUICK_ACTIONS.map(({ label, icon: Icon, path }, i) => (
                   <button
                     key={label}
-                    onClick={ripple(() => { if (path) navigate({ to: path }); })}
+                    onClick={ripple(() => {
+                      if (path) navigate({ to: path });
+                    })}
                     onMouseEnter={() => setHoveredAction(i)}
                     onMouseLeave={() => setHoveredAction(null)}
                     className="ripple-btn flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 w-full sm:w-auto justify-center sm:justify-start"
@@ -506,7 +534,6 @@ export function DashboardPage() {
                 ))}
               </div>
             </section>
-
           </div>
         </div>
       </main>

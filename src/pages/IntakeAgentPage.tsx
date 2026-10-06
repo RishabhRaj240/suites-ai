@@ -122,9 +122,7 @@ function SidebarShell({
 
   return (
     <>
-      {sidebarOpen && (
-        <div className="sidebar-overlay md:hidden" onClick={onCloseSidebar} />
-      )}
+      {sidebarOpen && <div className="sidebar-overlay md:hidden" onClick={onCloseSidebar} />}
       <nav
         className={`flex flex-col h-full shrink-0 fixed md:static z-40 transition-transform duration-200 ease-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -158,7 +156,10 @@ function SidebarShell({
             return (
               <button
                 key={id}
-                onClick={() => { navigate({ to: path }); onCloseSidebar(); }}
+                onClick={() => {
+                  navigate({ to: path });
+                  onCloseSidebar();
+                }}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 w-full text-left"
                 style={{
                   color: isActive ? "#A78BFF" : "#7A7A8C",
@@ -235,17 +236,13 @@ export function IntakeAgentPage() {
         .select("full_name, email, firm")
         .eq("id", data.user.id)
         .maybeSingle();
-      setProfile(
-        row ?? { full_name: null, email: data.user.email ?? null, firm: null },
-      );
+      setProfile(row ?? { full_name: null, email: data.user.email ?? null, firm: null });
     });
   }, []);
 
-  const displayName =
-    profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
+  const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Counselor";
   const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -316,7 +313,7 @@ export function IntakeAgentPage() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [form.clientName, form.caseType, form.description]);
+  }, [form]);
 
   function generateLocalSummary(f: FormState): string {
     return `This matter involves ${f.clientName}, seeking legal representation for a ${f.caseType} case. ${f.description.slice(0, 180)}${f.description.length > 180 ? "..." : ""} Client may be reached at ${f.contactInfo || "[contact pending]"}. Intake recorded on ${f.intakeDate}.`;
@@ -350,9 +347,9 @@ export function IntakeAgentPage() {
       setSubmitted(true);
       setSummaryStatus("submitted");
       toast.success("Intake submitted successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.message || "Failed to submit intake");
+      toast.error(err instanceof Error ? err.message : "Failed to submit intake");
     } finally {
       setSubmitting(false);
     }
@@ -396,7 +393,7 @@ export function IntakeAgentPage() {
   };
 
   const actions = form.caseType
-    ? RECOMMENDED_ACTIONS[form.caseType] ?? RECOMMENDED_ACTIONS["Other"]
+    ? (RECOMMENDED_ACTIONS[form.caseType] ?? RECOMMENDED_ACTIONS["Other"])
     : RECOMMENDED_ACTIONS["Other"];
 
   return (
@@ -443,8 +440,7 @@ export function IntakeAgentPage() {
 
           <div className="flex items-center gap-3">
             <p className="text-sm font-semibold text-white hidden lg:block">
-              {greeting},{" "}
-              <span style={{ color: "#A78BFF" }}>{displayName}</span>
+              {greeting}, <span style={{ color: "#A78BFF" }}>{displayName}</span>
             </p>
             <button
               className="p-2 rounded-lg transition-colors"
@@ -499,7 +495,6 @@ export function IntakeAgentPage() {
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           <div className="max-w-6xl mx-auto flex flex-col gap-6 lg:gap-8">
-
             {/* Page title */}
             <section>
               <span
@@ -524,7 +519,6 @@ export function IntakeAgentPage() {
 
             {/* Two-column layout */}
             <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-6 lg:gap-8">
-
               {/* ── LEFT: Form ── */}
               <div
                 className="rounded-xl p-7 flex flex-col gap-6"
@@ -546,7 +540,6 @@ export function IntakeAgentPage() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
                   {/* Client Name */}
                   <div className="flex flex-col gap-2">
                     <label style={labelStyle}>Client Name *</label>
@@ -683,9 +676,7 @@ export function IntakeAgentPage() {
                     >
                       {submitting ? (
                         <>
-                          <span
-                            className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                          />
+                          <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           Submitting...
                         </>
                       ) : (
@@ -762,7 +753,6 @@ export function IntakeAgentPage() {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -978,20 +968,21 @@ function SummaryContent({
 
       {/* Contact & Date */}
       {(form.contactInfo || form.intakeDate) && (
-        <div
-          className="grid grid-cols-2 gap-4 pt-4"
-          style={{ borderTop: "1px solid #1E1E2E" }}
-        >
+        <div className="grid grid-cols-2 gap-4 pt-4" style={{ borderTop: "1px solid #1E1E2E" }}>
           {form.contactInfo && (
             <div>
               <p style={rowLabel}>Contact</p>
-              <p className="text-xs" style={{ color: "#c8c4d7" }}>{form.contactInfo}</p>
+              <p className="text-xs" style={{ color: "#c8c4d7" }}>
+                {form.contactInfo}
+              </p>
             </div>
           )}
           {form.intakeDate && (
             <div>
               <p style={rowLabel}>Intake Date</p>
-              <p className="text-xs" style={{ color: "#c8c4d7" }}>{form.intakeDate}</p>
+              <p className="text-xs" style={{ color: "#c8c4d7" }}>
+                {form.intakeDate}
+              </p>
             </div>
           )}
         </div>
